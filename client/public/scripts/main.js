@@ -1,7 +1,6 @@
-
 // Main JavaScript functionality for EdgeMarket homepage
 document.addEventListener('DOMContentLoaded', function() {
-    
+
     // Ripple effect for buttons
     document.querySelectorAll('.ripple-effect').forEach(button => {
         button.addEventListener('click', function(e) {
@@ -10,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const size = Math.max(rect.width, rect.height);
             const x = e.clientX - rect.left - size / 2;
             const y = e.clientY - rect.top - size / 2;
-            
+
             ripple.style.cssText = `
                 width: ${size}px;
                 height: ${size}px;
@@ -23,9 +22,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 animation: ripple 0.6s linear;
                 pointer-events: none;
             `;
-            
+
             this.appendChild(ripple);
-            
+
             setTimeout(() => {
                 ripple.remove();
             }, 600);
@@ -34,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Smooth reveal animations on scroll
     const revealElements = document.querySelectorAll('.fade-in-up, [data-aos]');
-    
+
     const revealObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -57,15 +56,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // Navigation scroll effect
     let lastScroll = 0;
     const navbar = document.getElementById('navbar');
-    
+
     window.addEventListener('scroll', () => {
         const currentScroll = window.pageYOffset;
-        
+
         if (currentScroll <= 0) {
             navbar.classList.remove('scroll-up');
             return;
         }
-        
+
         if (currentScroll > lastScroll && !navbar.classList.contains('scroll-down')) {
             navbar.classList.remove('scroll-up');
             navbar.classList.add('scroll-down');
@@ -73,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             navbar.classList.remove('scroll-down');
             navbar.classList.add('scroll-up');
         }
-        
+
         lastScroll = currentScroll;
     });
 
@@ -84,6 +83,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Close button functionality
+document.addEventListener('DOMContentLoaded', function() {
+  const closeBtn = document.querySelector('.close-btn');
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function() {
+      // Close functionality
+    });
+  }
+});
+
+// Fix duplicate style declarations
+const style = document.createElement('style');
+
 
 // Add ripple animation CSS
 const rippleStyles = document.createElement('style');

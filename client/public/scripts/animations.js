@@ -644,19 +644,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Number counter animation
     function animateNumbers() {
         const numbers = document.querySelectorAll('.stat-number[data-target]');
-        
+
         numbers.forEach(number => {
             const target = parseInt(number.getAttribute('data-target'));
             const increment = target / 100;
             let current = 0;
-            
+
             const timer = setInterval(() => {
                 current += increment;
                 if (current >= target) {
                     current = target;
                     clearInterval(timer);
                 }
-                
+
                 if (target >= 1000) {
                     number.textContent = (current / 1000).toFixed(0) + 'K+';
                 } else if (target < 100) {
@@ -678,7 +678,7 @@ document.addEventListener('DOMContentLoaded', function() {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate-in');
-                
+
                 // Trigger number animation for stats
                 if (entry.target.classList.contains('hero-stats')) {
                     animateNumbers();
@@ -712,19 +712,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     window.addEventListener('scroll', () => {
         const currentScrollY = window.scrollY;
-        
+
         if (currentScrollY > 100) {
             navbar.classList.add('scrolled');
         } else {
             navbar.classList.remove('scrolled');
         }
-        
+
         if (currentScrollY > lastScrollY && currentScrollY > 200) {
             navbar.classList.add('hidden');
         } else {
             navbar.classList.remove('hidden');
         }
-        
+
         lastScrollY = currentScrollY;
     });
 });
