@@ -6,6 +6,7 @@ import { config } from "dotenv";
 import { setupVite } from "./vite";
 import { registerRoutes } from "./routes";
 import { adminRouter } from "./admin-routes";
+import { verifySupabaseConnection } from "./verify-supabase";
 
 // Load environment variables from .env file
 config({ path: '.env' });
@@ -48,4 +49,7 @@ server.listen(port, "0.0.0.0", () => {
   console.log(`📊 Admin credentials: z@test.com / 421`);
   console.log(`🔐 Using Supabase URL: ${process.env.VITE_SUPABASE_URL || 'Not configured'}`);
   console.log(`🔗 Database URL: ${process.env.DATABASE_URL ? 'Configured' : 'Not configured'}`);
+  
+  // Verify Supabase connection
+  verifySupabaseConnection().catch(console.error);
 });

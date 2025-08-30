@@ -2,3 +2,19 @@ modules = ["nodejs-20"]
 [nix]
 packages = ["unzipNLS"]
 channel = "stable-25_05"
+
+[workflows]
+runButton = "Run"
+
+[[workflows.workflow]]
+name = "Run"
+author = 47056512
+mode = "sequential"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm install"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "npm run dev"
