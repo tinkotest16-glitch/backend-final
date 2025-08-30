@@ -1,10 +1,18 @@
 
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
 import logoUrl from "@/assets/logo.jpg";
 
 export function Header() {
+  const [, setLocation] = useLocation();
+
+  const handleGetStarted = () => {
+    setLocation("/login");
+  };
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-trading-border bg-trading-secondary/95 backdrop-blur supports-[backdrop-filter]:bg-trading-secondary/60">
-      <div className="container flex h-16 items-center px-4 max-w-7xl mx-auto">
+      <div className="container flex h-16 items-center justify-between px-4 max-w-7xl mx-auto">
         {/* Logo and Brand */}
         <div className="flex items-center space-x-3">
           <div className="relative">
@@ -23,6 +31,14 @@ export function Header() {
             </span>
           </div>
         </div>
+
+        {/* Get Started Button */}
+        <Button 
+          onClick={handleGetStarted}
+          className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-6 py-2 rounded-lg font-semibold transition-all duration-300 hover:scale-105"
+        >
+          Get Started
+        </Button>
       </div>
     </header>
   );
