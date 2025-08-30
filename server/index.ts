@@ -1,7 +1,6 @@
+
 import express from "express";
 import session from "express-session";
-import cors from "cors";
-import path from "path";
 import { createServer } from "http";
 import { config } from "dotenv";
 import { setupVite } from "./vite";
@@ -29,10 +28,6 @@ app.use(session({
 // Express middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-
-// Serve static files from client/public
-app.use(express.static(path.join(__dirname, '../client/public')));
 
 // API routes
 registerRoutes(app);
@@ -54,7 +49,7 @@ server.listen(port, "0.0.0.0", () => {
   console.log(`📊 Admin credentials: z@test.com / 421`);
   console.log(`🔐 Using Supabase URL: ${process.env.VITE_SUPABASE_URL || 'Not configured'}`);
   console.log(`🔗 Database URL: ${process.env.DATABASE_URL ? 'Configured' : 'Not configured'}`);
-
+  
   // Verify Supabase connection
   verifySupabaseConnection().catch(console.error);
 });
