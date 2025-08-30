@@ -1,0 +1,128 @@
+import { createClient } from '@supabase/supabase-js';
+import { useState, useEffect } from 'react';
+
+// Initialize Supabase Client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!, 
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+// Trading Pair Interface
+interface TradingPair {
+  id: number;
+  symbol: string;
+  bid_price: number;
+  ask_price: number;
+  updated_at: string;
+}
+
+export default function TradingPairsPage() {
+  const [tradingPairs, setTradingPairs] = useState<TradingPair[]>([]);
+
+  // Fetch Initial Trading Pairs
+  const fetchTradingPairs = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('trading_pairs')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+
+      setTradingPairs(data || []);
+    } catch (err) {
+      console.error('Fetch Trading Pairs Error:', err);
+    }
+  };
+
+  // Update Trading Pair
+  const updateTradingPair = async (
+    id: number, 
+    updates: Partial<TradingPair>
+  ) => {
+    try {
+      const { data, error } = await supabase
+        .from('trading_pairs')
+        .update({
+          bid_price: Number(updates.bid_price) || 0,
+          ask_price: Number(updates.ask_price) || 0
+        })
+        .eq('id', id)
+        .select();
+
+      if (error) throw error;
+      return true;
+    } catch (err) {
+      console.error('Trading Pair Update Error:', err);
+      return false;
+    }
+  };
+
+  // Realtime Subscription
+  useEffect(() => {
+    // Fetch initial data
+    fetchTradingPairs();
+
+    // Set up realtime subscription
+    const channel = supabase
+      .channel('trading_pairs')
+      .on(
+        'postgres_changes', 
+        { 
+          event: '*', 
+          schema: 'public', 
+          table: 'trading_pairs' 
+        },
+        (payload) => {
+          console.log('Realtime Update:', payload);
+          
+          switch(payload.eventType) {
+            case 'INSERT':
+              setTradingPairs(current => [...current, payload.new]);
+              break;
+            case 'UPDATE':
+              setTradingPairs(current => 
+                current.map(pair => 
+                  pair.id === payload.new.id 
+                    ? { ...pair, ...payload.new } 
+                    : pair
+                )
+              );
+              break;
+            case 'DELETE':
+              setTradingPairs(current => 
+                current.filter(pair => pair.id !== payload.old.id)
+              );
+              break;
+          }
+        }
+      )
+      .subscribe();
+
+    // Cleanup subscription on unmount
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
+
+  return (
+    <div>
+      <h1>Trading Pairs</h1>
+      {tradingPairs.map(pair => (
+        <div key={pair.id}>
+          <p>Symbol: {pair.symbol}</p>
+          <p>Bid Price: {pair.bid_price}</p>
+          <p>Ask Price: {pair.ask_price}</p>
+          <button onClick={() => 
+            updateTradingPair(pair.id, {
+              bid_price: pair.bid_price + 0.01,
+              ask_price: pair.ask_price + 0.01
+            })
+          }>
+            Increment Prices
+          </button>
+        </div>
+      ))}
+    </div>
+  );
+}

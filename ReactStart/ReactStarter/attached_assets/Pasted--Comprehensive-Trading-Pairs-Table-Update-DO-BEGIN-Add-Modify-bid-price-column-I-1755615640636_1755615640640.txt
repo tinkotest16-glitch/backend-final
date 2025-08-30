@@ -1,0 +1,90 @@
+-- Comprehensive Trading Pairs Table Update
+DO $$
+BEGIN
+    -- Add/Modify bid_price column
+    IF NOT EXISTS (
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name='trading_pairs' AND column_name='bid_price'
+    ) THEN
+        ALTER TABLE trading_pairs 
+        ADD COLUMN bid_price NUMERIC(20,10) NOT NULL DEFAULT 0;
+    ELSE 
+        ALTER TABLE trading_pairs 
+        ALTER COLUMN bid_price TYPE NUMERIC(20,10) 
+        USING COALESCE(bid_price, 0)::NUMERIC(20,10),
+        ALTER COLUMN bid_price SET NOT NULL,
+        ALTER COLUMN bid_price SET DEFAULT 0;
+    END IF;
+
+    -- Add/Modify ask_price column
+    IF NOT EXISTS (
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name='trading_pairs' AND column_name='ask_price'
+    ) THEN
+        ALTER TABLE trading_pairs 
+        ADD COLUMN ask_price NUMERIC(20,10) NOT NULL DEFAULT 0;
+    ELSE
+        ALTER TABLE trading_pairs 
+        ALTER COLUMN ask_price TYPE NUMERIC(20,10) 
+        USING COALESCE(ask_price, 0)::NUMERIC(20,10),
+        ALTER COLUMN ask_price SET NOT NULL,
+        ALTER COLUMN ask_price SET DEFAULT 0;
+    END IF;
+
+    -- Ensure updated_at column exists
+    IF NOT EXISTS (
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name='trading_pairs' AND column_name='updated_at'
+    ) THEN
+        ALTER TABLE trading_pairs 
+        ADD COLUMN updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+    END IF;
+END $$;
+
+-- Create Timestamp Update Trigger
+CREATE OR REPLACE FUNCTION update_trading_pair_timestamp()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Drop existing trigger if it exists
+DROP TRIGGER IF EXISTS trading_pair_update_trigger ON trading_pairs;
+
+-- Create new trigger
+CREATE TRIGGER trading_pair_update_trigger
+BEFORE UPDATE ON trading_pairs
+FOR EACH ROW
+EXECUTE FUNCTION update_trading_pair_timestamp();
+
+-- Ensure RLS is enabled
+ALTER TABLE trading_pairs ENABLE ROW LEVEL SECURITY;
+
+-- Create RLS Policies
+DROP POLICY IF EXISTS "Enable read access" ON trading_pairs;
+DROP POLICY IF EXISTS "Enable insert for authenticated users" ON trading_pairs;
+DROP POLICY IF EXISTS "Enable update for authenticated users" ON trading_pairs;
+
+CREATE POLICY "Enable read access" ON trading_pairs
+FOR SELECT USING (true);
+
+CREATE POLICY "Enable insert for authenticated users" ON trading_pairs
+FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
+
+CREATE POLICY "Enable update for authenticated users" ON trading_pairs
+FOR UPDATE USING (auth.uid() IS NOT NULL)
+WITH CHECK (auth.uid() IS NOT NULL);
+
+-- Enable Realtime
+ALTER PUBLICATION supabase_realtime 
+ADD TABLE trading_pairs;
+
+-- Ensure unique constraint for symbol
+ALTER TABLE trading_pairs 
+ADD CONSTRAINT unique_trading_pair UNIQUE (symbol) 
+ON CONFLICT DO NOTHING;
