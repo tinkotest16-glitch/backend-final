@@ -4,7 +4,7 @@ packages = ["unzipNLS"]
 channel = "stable-25_05"
 
 [workflows]
-runButton = "Dev"
+runButton = "Run"
 
 [[workflows.workflow]]
 name = "Run"
@@ -14,23 +14,6 @@ mode = "sequential"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "npm install"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run dev"
-
-[[workflows.workflow]]
-name = "Dev"
-author = 47056512
-mode = "sequential"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm install"
-
-[[workflows.workflow.tasks]]
-task = "shell.exec"
-args = "npm run build"
 
 [[workflows.workflow.tasks]]
 task = "shell.exec"
