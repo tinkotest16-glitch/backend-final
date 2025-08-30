@@ -1,0 +1,75 @@
+-- Create users table
+CREATE TABLE IF NOT EXISTS users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  username TEXT UNIQUE NOT NULL,
+  full_name TEXT NOT NULL,
+  total_balance DECIMAL(15,2) DEFAULT 0.00,
+  trading_balance DECIMAL(15,2) DEFAULT 0.00,
+  profit DECIMAL(15,2) DEFAULT 0.00,
+  is_admin BOOLEAN DEFAULT FALSE,
+  is_quick_trade_locked BOOLEAN DEFAULT FALSE,
+  is_copy_trading_enabled BOOLEAN DEFAULT TRUE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create transactions table
+CREATE TABLE IF NOT EXISTS transactions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id),
+  type TEXT NOT NULL CHECK (type IN ('DEPOSIT', 'WITHDRAWAL')),
+  amount DECIMAL(15,2) NOT NULL,
+  currency TEXT NOT NULL,
+  method TEXT NOT NULL,
+  wallet_address TEXT,
+  status TEXT DEFAULT 'PENDING' CHECK (status IN ('PENDING', 'APPROVED', 'REJECTED')),
+  admin_notes TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Create trades table  
+CREATE TABLE IF NOT EXISTS trades (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES users(id),
+  pair_id TEXT NOT NULL,
+  type TEXT NOT NULL CHECK (type IN ('BUY', 'SELL')),
+  amount DECIMAL(15,2) NOT NULL,
+  entry_price DECIMAL(15,8) NOT NULL,
+  exit_price DECIMAL(15,8),
+  take_profit DECIMAL(15,8),
+  stop_loss DECIMAL(15,8),
+  pnl DECIMAL(15,2),
+  is_profit BOOLEAN,
+  status TEXT DEFAULT 'OPEN' CHECK (status IN ('OPEN', 'CLOSED')),
+  duration INTEGER DEFAULT 60,
+  closed_at TIMESTAMP WITH TIME ZONE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable Row Level Security
+ALTER TABLE users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE transactions ENABLE ROW LEVEL SECURITY; 
+ALTER TABLE trades ENABLE ROW LEVEL SECURITY;
+
+-- Create policies for admin access
+CREATE POLICY "Allow admin full access to users" ON users
+  FOR ALL USING (auth.jwt() ->> 'email' = 'z@test.com');
+
+CREATE POLICY "Allow admin full access to transactions" ON transactions  
+  FOR ALL USING (auth.jwt() ->> 'email' = 'z@test.com');
+
+CREATE POLICY "Allow admin full access to trades" ON trades
+  FOR ALL USING (auth.jwt() ->> 'email' = 'z@test.com');
+
+-- Create policies for users to access their own data
+CREATE POLICY "Users can view their own data" ON users
+  FOR SELECT USING (auth.uid() = id);
+
+CREATE POLICY "Users can view their own transactions" ON transactions
+  FOR SELECT USING (auth.uid() = user_id);
+
+CREATE POLICY "Users can view their own trades" ON trades  
+  FOR SELECT USING (auth.uid() = user_id);.

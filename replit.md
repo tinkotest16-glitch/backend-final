@@ -2,6 +2,12 @@
 
 EdgeMarket is a comprehensive forex trading platform that provides users with real-time trading capabilities, portfolio management, and market analysis tools. The application offers a simulated trading environment with 40+ trading pairs including major currencies, cryptocurrencies, and commodities. It features quick trading, copy trading, admin dashboard, transaction management, referral systems, and market news functionality.
 
+## Recent Updates (August 30, 2025)
+- ✅ **EdgeMarket App Successfully Moved to Root Directory** - All files transferred from ReactStart/ to root
+- ✅ **Dependencies Installed** - All required packages installed and configured
+- ✅ **Server Running on Port 5000** - Internal port 5000 with external access via port 80
+- ✅ **Preview Active** - Application accessible through Replit preview with full functionality
+
 # User Preferences
 
 Preferred communication style: Simple, everyday language.
