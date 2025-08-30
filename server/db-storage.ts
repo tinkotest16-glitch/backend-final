@@ -24,12 +24,18 @@ export class DatabaseStorage {
       email: 'z@test.com',
       password: '421',
       fullName: 'Admin User',
+      phoneNumber: null,
+      country: null,
       isAdmin: true,
       totalBalance: '10000.00',
       tradingBalance: '5000.00',
       profit: '1000.00',
       referralEarnings: '100.00',
       referralCode: 'ADMIN001',
+      referredBy: null,
+      isQuickTradeLocked: false,
+      isCopyTradingEnabled: false,
+      copyTradingMasterUserId: null,
       createdAt: new Date(),
       updatedAt: new Date()
     });
@@ -488,18 +494,6 @@ export class DatabaseStorage {
     return existingWallet;
   }
 
-  async updateUser(userId: string, updates: Partial<any>): Promise<any | null> {
-    const userIndex = this.users.findIndex(u => u.id === userId);
-    if (userIndex === -1) return null;
-
-    this.users[userIndex] = { 
-      ...this.users[userIndex], 
-      ...updates,
-      updatedAt: new Date()
-    };
-
-    return this.users[userIndex];
-  }
 
   async createWalletAddress(walletData: any): Promise<any> {
     const wallet = {
@@ -512,43 +506,6 @@ export class DatabaseStorage {
     return wallet;
   }
 
-  async getTransactions(): Promise<any[]> {
-    // Mock implementation - in real app this would query transactions table
-    return [
-      {
-        id: "tx1",
-        userId: "admin-user-id",
-        type: "DEPOSIT",
-        amount: "1000.00",
-        currency: "BTC",
-        method: "Bitcoin",
-        status: "PENDING",
-        createdAt: new Date().toISOString(),
-        walletAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh"
-      },
-      {
-        id: "tx2",
-        userId: "test-user-id",
-        type: "WITHDRAWAL",
-        amount: "500.00",
-        currency: "ETH",
-        method: "Ethereum",
-        status: "PENDING",
-        createdAt: new Date().toISOString(),
-        walletAddress: "0x742d35Cc6464C4532d61B8fF5eA5D8a4E2e3A5b9"
-      }
-    ];
-  }
-
-  async getTransactionById(transactionId: string): Promise<any> {
-    const transactions = await this.getTransactions();
-    return transactions.find(tx => tx.id === transactionId);
-  }
-
-  async updateTransactionStatus(transactionId: string, status: string, adminNotes?: string): Promise<void> {
-    // Mock implementation - in real app this would update database
-    console.log(`Transaction ${transactionId} status updated to ${status}`, adminNotes);
-  }
 }
 
 export const dbStorage = new DatabaseStorage()

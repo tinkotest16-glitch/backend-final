@@ -10,6 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, CreditCard, Clock, CheckCircle, XCircle } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 interface WithdrawalRequest {
   id: string;
@@ -30,8 +32,8 @@ export default function Withdrawals() {
   const [currency, setCurrency] = useState("BTC");
   const [walletAddress, setWalletAddress] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [withdrawals, setWithdrawals] = useState<WithdrawalRequest[]>([]);
   const [feePercentage, setFeePercentage] = useState(10); // Default 10%
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -39,31 +41,42 @@ export default function Withdrawals() {
     }
   }, [user, isLoading, setLocation]);
 
-  useEffect(() => {
-    if (user) {
-      loadWithdrawals();
-    }
-  }, [user]);
+  // Fetch user transactions (including withdrawals)
+  const { data: transactions, isLoading: transactionsLoading } = useQuery({
+    queryKey: ['/api/transactions', user?.id],
+    enabled: !!user?.id,
+  });
 
-  const loadWithdrawals = () => {
-    const mockWithdrawals: WithdrawalRequest[] = [
-      {
-        id: '1',
-        amount: 1000,
-        currency: 'BTC',
-        wallet_address: '1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa',
-        fee: 100,
-        net_amount: 900,
-        status: 'pending',
-        created_at: new Date().toISOString()
-      }
-    ];
-    setWithdrawals(mockWithdrawals);
-  };
+  // Filter withdrawals from transactions
+  const withdrawals = transactions?.filter(t => t.type === 'WITHDRAWAL') || [];
 
   const calculateFee = (amount: number): number => {
     return (amount * feePercentage) / 100;
   };
+
+  // Create withdrawal mutation
+  const createWithdrawalMutation = useMutation({
+    mutationFn: async (withdrawalData: any) => {
+      const response = await apiRequest('POST', '/api/transactions', withdrawalData);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/transactions'] });
+      setAmount("");
+      setWalletAddress("");
+      toast({
+        title: "Withdrawal Request Submitted",
+        description: `Your withdrawal request has been submitted for approval.`,
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Submission Failed",
+        description: "Failed to submit withdrawal request. Please try again.",
+        variant: "destructive",
+      });
+    }
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,39 +114,17 @@ export default function Withdrawals() {
     const fee = calculateFee(withdrawalAmount);
     const netAmount = withdrawalAmount - fee;
 
-    setIsSubmitting(true);
-
-    try {
-      const newWithdrawal: WithdrawalRequest = {
-        id: Date.now().toString(),
-        amount: withdrawalAmount,
-        currency,
-        wallet_address: walletAddress,
-        fee,
-        net_amount: netAmount,
-        status: 'pending',
-        created_at: new Date().toISOString()
-      };
-
-      setWithdrawals([newWithdrawal, ...withdrawals]);
-      setAmount("");
-      setWalletAddress("");
-
-      toast({
-        title: "Withdrawal Request Submitted",
-        description: `Your withdrawal request for $${withdrawalAmount} has been submitted for approval.`,
-      });
-
-    } catch (error) {
-      console.error('Withdrawal error:', error);
-      toast({
-        title: "Submission Failed",
-        description: "Failed to submit withdrawal request. Please try again.",
-        variant: "destructive",
-      });
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Create withdrawal transaction
+    createWithdrawalMutation.mutate({
+      userId: user.id,
+      type: 'WITHDRAWAL',
+      amount: withdrawalAmount.toString(),
+      currency,
+      method: 'CRYPTO',
+      walletAddress,
+      fee: fee.toString(),
+      status: 'PENDING'
+    });
   };
 
   if (isLoading) {
@@ -261,7 +252,7 @@ export default function Withdrawals() {
                       <Button
                         type="submit"
                         className="w-full max-w-sm trading-button-primary bg-yellow-600 hover:bg-yellow-700 border-yellow-500"
-                        disabled={isSubmitting || !amount || !walletAddress}
+                        disabled={createWithdrawalMutation.isPending || !amount || !walletAddress}
                       >
                         {isSubmitting ? "Processing..." : "Withdraw anyway"}
                       </Button>
@@ -279,7 +270,11 @@ export default function Withdrawals() {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {withdrawals.length === 0 ? (
+                    {transactionsLoading ? (
+                      <div className="flex justify-center py-8">
+                        <div className="spinner w-6 h-6"></div>
+                      </div>
+                    ) : withdrawals.length === 0 ? (
                       <div className="text-center py-8 text-trading-muted">
                         <CreditCard className="h-12 w-12 mx-auto mb-4 text-gray-600" />
                         <p>No withdrawal requests yet</p>
@@ -290,29 +285,31 @@ export default function Withdrawals() {
                           <div className="flex items-center justify-between mb-2">
                             <div>
                               <div className="font-medium text-white">
-                                ${withdrawal.amount.toFixed(2)} {withdrawal.currency}
+                                ${parseFloat(withdrawal.amount).toFixed(2)} {withdrawal.currency || 'USD'}
                               </div>
                               <div className="text-sm text-trading-muted">
-                                Net: ${withdrawal.net_amount.toFixed(2)}
+                                Method: {withdrawal.method}
                               </div>
                             </div>
                             <Badge
                               variant={
-                                withdrawal.status === 'approved' ? 'default' :
-                                withdrawal.status === 'rejected' ? 'destructive' :
+                                withdrawal.status === 'APPROVED' ? 'default' :
+                                withdrawal.status === 'REJECTED' ? 'destructive' :
                                 'secondary'
                               }
                             >
-                              {withdrawal.status === 'pending' && <Clock className="w-3 h-3 mr-1" />}
-                              {withdrawal.status === 'approved' && <CheckCircle className="w-3 h-3 mr-1" />}
-                              {withdrawal.status === 'rejected' && <XCircle className="w-3 h-3 mr-1" />}
-                              {withdrawal.status.charAt(0).toUpperCase() + withdrawal.status.slice(1)}
+                              {withdrawal.status === 'PENDING' && <Clock className="w-3 h-3 mr-1" />}
+                              {withdrawal.status === 'APPROVED' && <CheckCircle className="w-3 h-3 mr-1" />}
+                              {withdrawal.status === 'REJECTED' && <XCircle className="w-3 h-3 mr-1" />}
+                              {withdrawal.status}
                             </Badge>
                           </div>
                           <div className="text-xs text-trading-muted">
-                            <div>Address: {withdrawal.wallet_address.substring(0, 20)}...</div>
-                            <div>Date: {new Date(withdrawal.created_at).toLocaleDateString()}</div>
-                            <div>Fee: ${withdrawal.fee.toFixed(2)}</div>
+                            <div>Address: {withdrawal.walletAddress?.substring(0, 20) || 'N/A'}...</div>
+                            <div>Date: {new Date(withdrawal.createdAt).toLocaleDateString()}</div>
+                            {withdrawal.adminNotes && (
+                              <div className="text-trading-danger">Admin Notes: {withdrawal.adminNotes}</div>
+                            )}
                           </div>
                         </div>
                       ))

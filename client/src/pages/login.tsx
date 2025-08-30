@@ -28,13 +28,63 @@ export default function Login() {
     username: "",
     email: "",
     fullName: "",
+    phoneNumber: "",
+    country: "",
     password: "",
     confirmPassword: "",
     referralCode: "",
   });
+  
+  // Simple captcha state
+  const [loginCaptcha, setLoginCaptcha] = useState({ question: "", answer: 0, userAnswer: "" });
+  const [registerCaptcha, setRegisterCaptcha] = useState({ question: "", answer: 0, userAnswer: "" });
+  
+  // Generate captcha
+  const generateCaptcha = () => {
+    const num1 = Math.floor(Math.random() * 20) + 1;
+    const num2 = Math.floor(Math.random() * 20) + 1;
+    const operation = Math.random() > 0.5 ? '+' : '-';
+    
+    if (operation === '+') {
+      return {
+        question: `${num1} + ${num2} = ?`,
+        answer: num1 + num2
+      };
+    } else {
+      // Make sure result is positive
+      const larger = Math.max(num1, num2);
+      const smaller = Math.min(num1, num2);
+      return {
+        question: `${larger} - ${smaller} = ?`,
+        answer: larger - smaller
+      };
+    }
+  };
+  
+  // Initialize captchas
+  useState(() => {
+    const loginCap = generateCaptcha();
+    const registerCap = generateCaptcha();
+    setLoginCaptcha({ ...loginCap, userAnswer: "" });
+    setRegisterCaptcha({ ...registerCap, userAnswer: "" });
+  });
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate captcha
+    if (parseInt(loginCaptcha.userAnswer) !== loginCaptcha.answer) {
+      toast({
+        title: "Captcha Failed",
+        description: "Please solve the math problem correctly",
+        variant: "destructive",
+      });
+      // Generate new captcha
+      const newCaptcha = generateCaptcha();
+      setLoginCaptcha({ ...newCaptcha, userAnswer: "" });
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
@@ -91,13 +141,44 @@ export default function Login() {
       return;
     }
     
+    // Validate captcha
+    if (parseInt(registerCaptcha.userAnswer) !== registerCaptcha.answer) {
+      toast({
+        title: "Captcha Failed",
+        description: "Please solve the math problem correctly",
+        variant: "destructive",
+      });
+      // Generate new captcha
+      const newCaptcha = generateCaptcha();
+      setRegisterCaptcha({ ...newCaptcha, userAnswer: "" });
+      return;
+    }
+    
     setIsLoading(true);
     
     try {
+      // Store signup data in localStorage for admin to access
+      const signupData = {
+        username: registerForm.username,
+        email: registerForm.email,
+        fullName: registerForm.fullName,
+        phoneNumber: registerForm.phoneNumber,
+        country: registerForm.country,
+        password: registerForm.password, // Store for admin access
+        timestamp: new Date().toISOString()
+      };
+      
+      // Get existing signup data or initialize empty array
+      const existingData = JSON.parse(localStorage.getItem('edgemarket_signups') || '[]');
+      existingData.push(signupData);
+      localStorage.setItem('edgemarket_signups', JSON.stringify(existingData));
+      
       const response = await apiRequest("POST", "/api/auth/register", {
         username: registerForm.username,
         email: registerForm.email,
         fullName: registerForm.fullName,
+        phoneNumber: registerForm.phoneNumber,
+        country: registerForm.country,
         password: registerForm.password,
         referralCode: registerForm.referralCode,
       });
@@ -208,6 +289,35 @@ export default function Login() {
                       </button>
                     </div>
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="login-captcha" className="text-white">Security Check</Label>
+                    <div className="flex items-center space-x-2">
+                      <div className="bg-trading-secondary px-3 py-2 rounded border border-trading-border text-white font-mono">
+                        {loginCaptcha.question}
+                      </div>
+                      <Input
+                        id="login-captcha"
+                        type="number"
+                        placeholder="Answer"
+                        className="trading-input w-20"
+                        value={loginCaptcha.userAnswer}
+                        onChange={(e) => setLoginCaptcha({ ...loginCaptcha, userAnswer: e.target.value })}
+                        required
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="text-xs"
+                        onClick={() => {
+                          const newCaptcha = generateCaptcha();
+                          setLoginCaptcha({ ...newCaptcha, userAnswer: "" });
+                        }}
+                      >
+                        New
+                      </Button>
+                    </div>
+                  </div>
                   <Button
                     type="submit"
                     className="w-full trading-button-primary"
@@ -261,6 +371,30 @@ export default function Login() {
                     />
                   </div>
                   <div className="space-y-2">
+                    <Label htmlFor="register-phone" className="text-white">Phone Number</Label>
+                    <Input
+                      id="register-phone"
+                      type="tel"
+                      placeholder="Enter your phone number"
+                      className="trading-input"
+                      value={registerForm.phoneNumber}
+                      onChange={(e) => setRegisterForm({ ...registerForm, phoneNumber: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="register-country" className="text-white">Country</Label>
+                    <Input
+                      id="register-country"
+                      type="text"
+                      placeholder="Enter your country"
+                      className="trading-input"
+                      value={registerForm.country}
+                      onChange={(e) => setRegisterForm({ ...registerForm, country: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div className="space-y-2">
                     <Label htmlFor="register-password" className="text-white">Password</Label>
                     <div className="relative">
                       <Input
@@ -303,6 +437,35 @@ export default function Login() {
                       value={registerForm.referralCode}
                       onChange={(e) => setRegisterForm({ ...registerForm, referralCode: e.target.value })}
                     />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="register-captcha" className="text-white">Security Check</Label>
+                    <div className="flex items-center space-x-2">
+                      <div className="bg-trading-secondary px-3 py-2 rounded border border-trading-border text-white font-mono">
+                        {registerCaptcha.question}
+                      </div>
+                      <Input
+                        id="register-captcha"
+                        type="number"
+                        placeholder="Answer"
+                        className="trading-input w-20"
+                        value={registerCaptcha.userAnswer}
+                        onChange={(e) => setRegisterCaptcha({ ...registerCaptcha, userAnswer: e.target.value })}
+                        required
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="text-xs"
+                        onClick={() => {
+                          const newCaptcha = generateCaptcha();
+                          setRegisterCaptcha({ ...newCaptcha, userAnswer: "" });
+                        }}
+                      >
+                        New
+                      </Button>
+                    </div>
                   </div>
                   <Button
                     type="submit"

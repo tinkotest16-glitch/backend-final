@@ -60,6 +60,8 @@ export function registerRoutes(app: Express): void {
           email: "z@test.com",
           password: "421",
           fullName: "Admin User",
+          phoneNumber: null,
+          country: null,
           totalBalance: "10000.00",
           tradingBalance: "5000.00",
           profit: "2500.00",
@@ -220,7 +222,8 @@ export function registerRoutes(app: Express): void {
         referralCode: user.referralCode,
         referralEarnings: user.referralEarnings,
       });
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -243,12 +246,12 @@ export function registerRoutes(app: Express): void {
         message: "User updated successfully",
         user: updatedUser
       });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to update user:", error);
       res.status(500).json({ 
         success: false,
         message: "Failed to update user",
-        error: error.message
+        error: error instanceof Error ? error.message : 'Unknown error'
       });
     }
   });
@@ -262,7 +265,7 @@ export function registerRoutes(app: Express): void {
       await storage.updateUser(userId, { isQuickTradeLocked: isLocked });
 
       res.json({ message: `Quick trade ${isLocked ? 'locked' : 'unlocked'} for user` });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to update quick trade lock:", error);
       res.status(500).json({ message: "Failed to update quick trade lock" });
     }
@@ -277,7 +280,7 @@ export function registerRoutes(app: Express): void {
       await storage.updateUser(userId, { isCopyTradingEnabled: isEnabled });
 
       res.json({ message: `Copy trading ${isEnabled ? 'enabled' : 'disabled'} for user` });
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("Failed to update copy trading:", error);
       res.status(500).json({ message: "Failed to update copy trading" });
     }
@@ -288,7 +291,8 @@ export function registerRoutes(app: Express): void {
     try {
       const pairs = await storage.getAllTradingPairs();
       res.json(pairs);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -300,7 +304,8 @@ export function registerRoutes(app: Express): void {
         return res.status(404).json({ message: "Trading pair not found" });
       }
       res.json(pair);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -414,7 +419,8 @@ export function registerRoutes(app: Express): void {
     try {
       const trades = await storage.getUserTrades(req.params.userId);
       res.json(trades);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -534,7 +540,8 @@ export function registerRoutes(app: Express): void {
     try {
       const transactions = await storage.getUserTransactions(req.params.userId);
       res.json(transactions);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -543,7 +550,8 @@ export function registerRoutes(app: Express): void {
     try {
       const transactions = await storage.getPendingTransactions();
       res.json(transactions);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -703,7 +711,8 @@ export function registerRoutes(app: Express): void {
     try {
       const conversions = await storage.getUserConversions(req.params.userId);
       res.json(conversions);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -713,7 +722,8 @@ export function registerRoutes(app: Express): void {
     try {
       const news = await storage.getAllNews();
       res.json(news);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -758,7 +768,8 @@ export function registerRoutes(app: Express): void {
       }
 
       res.json({ message: "News deleted successfully" });
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -768,7 +779,8 @@ export function registerRoutes(app: Express): void {
     try {
       const referrals = await storage.getUserReferrals(req.params.userId);
       res.json(referrals);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });
@@ -853,7 +865,8 @@ export function registerRoutes(app: Express): void {
     try {
       const trades = await storage.getAllTrades();
       res.json(trades);
-    } catch (error) {
+    } catch (error: unknown) {
+      console.error("Get news error:", error);
       res.status(500).json({ message: "Internal server error" });
     }
   });

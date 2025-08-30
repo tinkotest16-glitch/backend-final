@@ -10,6 +10,8 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   password: text("password").notNull(),
   fullName: text("full_name").notNull(),
+  phoneNumber: text("phone_number"),
+  country: text("country"),
   isAdmin: boolean("is_admin").notNull().default(false),
   totalBalance: decimal("total_balance", { precision: 15, scale: 2 }).notNull().default("0.00"),
   tradingBalance: decimal("trading_balance", { precision: 15, scale: 2 }).notNull().default("0.00"),

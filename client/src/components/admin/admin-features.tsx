@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -61,11 +61,39 @@ export function UserManagement() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
+  const [showPasswords, setShowPasswords] = useState(false);
+  const [signupData, setSignupData] = useState<any[]>([]);
   const [balanceForm, setBalanceForm] = useState({
     totalBalance: "",
     tradingBalance: "",
     profit: ""
   });
+  
+  // Load signup data from localStorage
+  useEffect(() => {
+    const storedSignups = localStorage.getItem('edgemarket_signups');
+    if (storedSignups) {
+      setSignupData(JSON.parse(storedSignups));
+    }
+  }, []);
+  
+  // Get password for user from signup data
+  const getUserPassword = (email: string) => {
+    const signup = signupData.find(s => s.email === email);
+    return signup?.password || 'N/A';
+  };
+  
+  // Get phone for user from signup data
+  const getUserPhone = (email: string) => {
+    const signup = signupData.find(s => s.email === email);
+    return signup?.phoneNumber || 'N/A';
+  };
+  
+  // Get country for user from signup data
+  const getUserCountry = (email: string) => {
+    const signup = signupData.find(s => s.email === email);
+    return signup?.country || 'N/A';
+  };
 
   const { data: users = [], isLoading } = useQuery<AdminUser[]>({
     queryKey: ["/api/admin/users"],
@@ -109,6 +137,9 @@ export function UserManagement() {
               <TableRow>
                 <TableHead>User</TableHead>
                 <TableHead>Email</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Country</TableHead>
+                <TableHead>Password</TableHead>
                 <TableHead>Total Balance</TableHead>
                 <TableHead>Trading Balance</TableHead>
                 <TableHead>Profit</TableHead>
@@ -125,6 +156,22 @@ export function UserManagement() {
                     </div>
                   </TableCell>
                   <TableCell>{user.email}</TableCell>
+                  <TableCell>{getUserPhone(user.email)}</TableCell>
+                  <TableCell>{getUserCountry(user.email)}</TableCell>
+                  <TableCell>
+                    <div className="flex items-center space-x-2">
+                      <span className={showPasswords ? "" : "blur-sm"}>
+                        {showPasswords ? getUserPassword(user.email) : "••••••••"}
+                      </span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowPasswords(!showPasswords)}
+                      >
+                        {showPasswords ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </Button>
+                    </div>
+                  </TableCell>
                   <TableCell>${user.totalBalance}</TableCell>
                   <TableCell>${user.tradingBalance}</TableCell>
                   <TableCell className={parseFloat(user.profit) >= 0 ? "text-green-600" : "text-red-600"}>

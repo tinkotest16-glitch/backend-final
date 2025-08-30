@@ -484,6 +484,7 @@ export default function AdminDashboard() {
           <TabsList className="bg-trading-secondary">
             <TabsTrigger value="transactions">Pending Approvals</TabsTrigger>
             <TabsTrigger value="all-transactions">All Transactions</TabsTrigger>
+            <TabsTrigger value="withdrawals">Withdrawal History</TabsTrigger>
             <TabsTrigger value="trades">Trades</TabsTrigger>
             <TabsTrigger value="news">News Management</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
@@ -643,6 +644,99 @@ export default function AdminDashboard() {
                       ))}
                     </TableBody>
                   </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Withdrawal History Tab */}
+          <TabsContent value="withdrawals">
+            <Card className="trading-card">
+              <CardHeader>
+                <CardTitle className="text-white">Withdrawal History</CardTitle>
+                <CardDescription className="text-gray-400">
+                  All withdrawal requests and their status
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {allTransactionsLoading ? (
+                  <div className="flex justify-center py-8">
+                    <div className="spinner w-6 h-6"></div>
+                  </div>
+                ) : !allTransactions ? (
+                  <div className="text-center py-8 text-gray-400">
+                    No withdrawal transactions found
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {allTransactions
+                      .filter(transaction => transaction.type === 'WITHDRAWAL')
+                      .map((transaction) => (
+                        <div 
+                          key={transaction.id}
+                          className="bg-trading-primary p-4 rounded-lg border border-trading-border"
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="space-y-1">
+                              <div className="flex items-center space-x-3">
+                                <div className="text-white font-medium">
+                                  ${parseFloat(transaction.amount).toFixed(2)}
+                                </div>
+                                <Badge
+                                  variant={
+                                    transaction.status === 'APPROVED' ? 'default' :
+                                    transaction.status === 'REJECTED' ? 'destructive' :
+                                    'secondary'
+                                  }
+                                  className={
+                                    transaction.status === 'APPROVED' ? 'bg-trading-success' :
+                                    transaction.status === 'REJECTED' ? 'bg-trading-danger' :
+                                    'bg-yellow-600'
+                                  }
+                                >
+                                  {transaction.status === 'PENDING' && <Clock className="w-3 h-3 mr-1" />}
+                                  {transaction.status === 'APPROVED' && <CheckCircle className="w-3 h-3 mr-1" />}
+                                  {transaction.status === 'REJECTED' && <XCircle className="w-3 h-3 mr-1" />}
+                                  {transaction.status}
+                                </Badge>
+                                <Badge variant="outline" className="border-trading-accent text-trading-accent">
+                                  {transaction.method}
+                                </Badge>
+                              </div>
+                              <p className="text-sm text-gray-400">
+                                User ID: {transaction.userId} • Date: {new Date(transaction.createdAt).toLocaleDateString()}
+                              </p>
+                              {transaction.adminNotes && (
+                                <p className="text-xs text-trading-warning">
+                                  Admin Notes: {transaction.adminNotes}
+                                </p>
+                              )}
+                            </div>
+                            {transaction.status === 'PENDING' && (
+                              <div className="flex gap-2">
+                                <Button 
+                                  size="sm" 
+                                  onClick={() => handleApproveTransaction(transaction.id)}
+                                  disabled={approveTransactionMutation.isPending}
+                                >
+                                  <CheckCircle className="w-4 h-4 mr-1" />
+                                  Approve
+                                </Button>
+                                <Button 
+                                  size="sm" 
+                                  className="trading-button-danger"
+                                  onClick={() => handleRejectTransaction(transaction.id, "Withdrawal rejected by admin")}
+                                  disabled={rejectTransactionMutation.isPending}
+                                >
+                                  <XCircle className="w-4 h-4 mr-1" />
+                                  Reject
+                                </Button>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                  </div>
                 )}
               </CardContent>
             </Card>
