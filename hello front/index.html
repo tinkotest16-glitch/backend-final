@@ -1,0 +1,475 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/animations.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/mobile.css">
+    
+    <script src="scripts/theme.js" defer></script>
+    <script src="scripts/mobile-menu.js" defer></script>
+</head>
+<body class="light-theme">
+
+
+    <!-- Floating Particles Background -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="index.html" style="text-decoration: none; display: flex; align-items: center; gap: 1rem;">
+                    <img src="./src/assets/logo1.jpg" alt="EdgeMarket Logo" class="logo pulse-animation" style="width: 50px; height: 50px;">
+                    <span class="brand-text">EdgeMarket</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="pages/hedge-funds.html" class="nav-link">Hedge Funds</a>
+                <a href="pages/brokers.html" class="nav-link">Brokers</a>
+                <a href="pages/fundamental-analysis.html" class="nav-link">Fundamental</a>
+                <a href="pages/technical-analysis.html" class="nav-link">Technical</a>
+                <a href="pages/portfolio.html" class="nav-link">Portfolio</a>
+                <a href="pages/about.html" class="nav-link">About</a>
+                <a href="pages/contact.html" class="nav-link">Contact</a>
+                <a href="pages/download.html" class="nav-link">Download</a>
+            </div>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+                <button class="cta-button ripple-effect" style="display: flex !important;">Get Started</button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="hero-background-effects">
+            <div class="hero-gradient-orb hero-orb-1"></div>
+            <div class="hero-gradient-orb hero-orb-2"></div>
+            <div class="hero-gradient-orb hero-orb-3"></div>
+        </div>
+        <div class="hero-container">
+            <div class="hero-content fade-in-up">
+                <div class="hero-badge">
+                    <span class="badge-icon">🌍</span>
+                    <span class="badge-text">Global Multi Trading Platform</span>
+                </div>
+                <h1 class="hero-title">
+                    Next-Generation
+                    <span class="gradient-text">Trading Excellence</span>
+                    for Modern Foreign Exchange Markets
+                </h1>
+                <p class="hero-description">
+                    Transform your trading journey with EdgeMarket's cutting-edge platform. 
+                    Access institutional-grade tools, lightning-fast execution, and AI-powered 
+                    analytics designed for serious traders.
+                </p>
+                <div class="hero-buttons">
+                    <button class="hero-primary-btn ripple-effect">
+                        <span class="btn-text">Start Trading Now</span>
+                        <span class="btn-icon">→</span>
+                    </button>
+                    <button class="hero-secondary-btn ripple-effect">
+                        <span class="btn-icon">▶</span>
+                        <span class="btn-text">Watch Demo</span>
+                    </button>
+                </div>
+                <div class="hero-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">👥</div>
+                        <span class="stat-number" data-target="750000">0</span>
+                        <span class="stat-label">Active Traders</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-icon">🟢</div>
+                        <span class="stat-number" data-target="9420">0</span>
+                        <span class="stat-label">Active Hardware & Devices</span>
+                    </div>
+                    <div class="stat-divider"></div>
+                    <div class="stat-item">
+                        <div class="stat-icon">⚡</div>
+                        <span class="stat-number" data-target="98.9">0</span>
+                        <span class="stat-label">% Uptime</span>
+                    </div>
+                </div>
+                <div class="hero-trust-indicators">
+                    <span class="trust-text">Trusted by professionals worldwide</span>
+                    <div class="trust-badges">
+                        <div class="trust-badge">🛡️ Bank-Level Security</div>
+                        <div class="trust-badge">⚡ Ultra-Low Latency</div>
+                        <div class="trust-badge">🌍 Global Markets</div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-mockup-container">
+                    <div class="mockup-background-glow"></div>
+                    <div class="desktop-mockup-wrapper floating-animation">
+                        <img src="src/assets/tradingchi1.jpg" alt="EdgeMarket Trading Platform Desktop" class="desktop-mockup">
+                        <div class="mockup-overlay">
+                            <div class="trading-stats">
+                                <div class="live-indicator">🟢 Live Markets</div>
+                                <div class="profit-indicator">+$56,567</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mobile-mockup-wrapper floating-delayed">
+                        <img src="src/assets/tradingchi.jpg" alt="EdgeMarket Mobile App" class="mobile-mockup">
+                        <div class="mobile-overlay">
+                            <div class="notification-badge">3</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">Premium Features</h2>
+                <p class="section-description">Everything you need for professional trading success</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Advanced Charts</h3>
+                    <p class="feature-description">Professional charting with 100+ technical indicators and drawing tools</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3 class="feature-title">AI Trading Assistant</h3>
+                    <p class="feature-description">Machine learning algorithms for market analysis and trade recommendations</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Bank-Level Security</h3>
+                    <p class="feature-description">Multi-layer encryption and secure custody for your digital assets</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="feature-title">Lightning Execution</h3>
+                    <p class="feature-description">Ultra-low latency execution with direct market access</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="feature-title">Global Markets</h3>
+                    <p class="feature-description">Access to forex, stocks, commodities, and crypto markets worldwide</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h3 class="feature-title">24/7 Support</h3>
+                    <p class="feature-description">Dedicated support team available around the clock</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- For Every Trader Section -->
+    <section class="trader-section" id="traders">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">For Every Trader</h2>
+                <p class="section-description">Whether you're a beginner or professional, we have the right tools</p>
+            </div>
+            
+            <div class="trader-types">
+                <div class="trader-card" data-aos="fade-right">
+                    <div class="trader-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h3>Beginners</h3>
+                    <p>Easy-to-use interface with educational resources and demo accounts</p>
+                    <ul>
+                        <li>Paper trading</li>
+                        <li>Video tutorials</li>
+                        <li>Risk management tools</li>
+                    </ul>
+                </div>
+                
+                <div class="trader-card" data-aos="fade-up">
+                    <div class="trader-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Active Traders</h3>
+                    <p>Advanced tools for day trading and swing trading strategies</p>
+                    <ul>
+                        <li>Real-time alerts</li>
+                        <li>Advanced orders</li>
+                        <li>Multi-monitor support</li>
+                    </ul>
+                </div>
+                
+                <div class="trader-card" data-aos="fade-left">
+                    <div class="trader-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3>Institutions</h3>
+                    <p>Enterprise solutions with institutional pricing and support</p>
+                    <ul>
+                        <li>Prime brokerage</li>
+                        <li>Custom APIs</li>
+                        <li>Dedicated account manager</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section" id="testimonials">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">What Elite Traders Say</h2>
+                <p class="section-description">Join thousands of successful traders who trust EdgeMarket</p>
+            </div>
+            
+            <div class="testimonials-container">
+                <div class="testimonials-grid">
+                    <div class="testimonial-card" data-aos="fade-up" data-aos-delay="100">
+                        <div class="testimonial-rating">
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                        </div>
+                        <div class="testimonial-content">
+                            <p>"EdgeMarket has completely transformed my trading performance. The AI insights and lightning-fast execution speed are absolutely unmatched in the industry."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face" alt="Michael Chen" class="author-avatar">
+                            <div class="author-info">
+                                <h4>Michael Chen</h4>
+                                <span>Senior Portfolio Manager</span>
+                                <div class="author-company">Goldman Sachs</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card featured" data-aos="fade-up" data-aos-delay="200">
+                        <div class="featured-badge">Featured Review</div>
+                        <div class="testimonial-rating">
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                        </div>
+                        <div class="testimonial-content">
+                            <p>"The platform's rock-solid reliability and comprehensive advanced features have enabled me to scale my trading operations by 300% this year alone."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1494790108755-2616b612b5bb?w=100&h=100&fit=crop&crop=face" alt="Sarah Williams" class="author-avatar">
+                            <div class="author-info">
+                                <h4>Sarah Williams</h4>
+                                <span>Hedge Fund Trader</span>
+                                <div class="author-company">Blackstone Group</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card" data-aos="fade-up" data-aos-delay="300">
+                        <div class="testimonial-rating">
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                            <span class="star">⭐</span>
+                        </div>
+                        <div class="testimonial-content">
+                            <p>"Outstanding 24/7 customer support and the most comprehensive suite of trading tools I've ever experienced. Highly recommend to serious traders!"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face" alt="David Rodriguez" class="author-avatar">
+                            <div class="author-info">
+                                <h4>David Rodriguez</h4>
+                                <span>Independent Trader</span>
+                                <div class="author-company">10+ Years Experience</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonials-stats">
+                    <div class="stats-item">
+                        <div class="stats-number">4.9/5</div>
+                        <div class="stats-label">Average Rating</div>
+                    </div>
+                    <div class="stats-divider"></div>
+                    <div class="stats-item">
+                        <div class="stats-number">25,000+</div>
+                        <div class="stats-label">Reviews</div>
+                    </div>
+                    <div class="stats-divider"></div>
+                    <div class="stats-item">
+                        <div class="stats-number">98%</div>
+                        <div class="stats-label">Recommend Us</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Awards Section -->
+    <section class="awards-section" id="awards">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">Industry Recognition</h2>
+                <p class="section-description">Awarded by leading financial institutions worldwide</p>
+            </div>
+            
+            <div class="awards-grid">
+                <div class="award-item" data-aos="zoom-in" data-aos-delay="100">
+                    <i class="fas fa-trophy award-icon"></i>
+                    <h4>Best Trading Platform 2024</h4>
+                    <p>Financial Technology Awards</p>
+                </div>
+                <div class="award-item" data-aos="zoom-in" data-aos-delay="200">
+                    <i class="fas fa-medal award-icon"></i>
+                    <h4>Innovation Excellence</h4>
+                    <p>Global Finance Magazine</p>
+                </div>
+                <div class="award-item" data-aos="zoom-in" data-aos-delay="300">
+                    <i class="fas fa-star award-icon"></i>
+                    <h4>Customer Choice Award</h4>
+                    <p>Trading Platform Review</p>
+                </div>
+                <div class="award-item" data-aos="zoom-in" data-aos-delay="400">
+                    <i class="fas fa-gem award-icon"></i>
+                    <h4>Security Excellence</h4>
+                    <p>Cybersecurity Institute</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="cta">
+        <div class="container">
+            <div class="cta-content fade-in-up">
+                <h2 class="cta-title">Ready to Transform Your Trading?</h2>
+                <p class="cta-description">Join thousands of successful traders and start your journey with EdgeMarket today</p>
+                <div class="cta-buttons">
+                    <button class="primary-button large ripple-effect">Open Trading Account</button>
+                    <button class="secondary-button large ripple-effect">Download Platform</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" id="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <img src="./src/assets/logo1.jpg" alt="EdgeMarket Logo" class="footer-logo">
+                        <span class="footer-brand-text">EdgeMarket</span>
+                    </div>
+                    <p class="footer-description">The premier multi-asset trading platform for professional traders worldwide.</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Trading</h4>
+                    <ul class="footer-links">
+                        <li><a href="pages/forex.html">Forex</a></li>
+                        <li><a href="pages/stocks.html">Stocks</a></li>
+                        <li><a href="pages/commodities.html">Commodities</a></li>
+                        <li><a href="pages/crypto.html">Cryptocurrency</a></li>
+                        <li><a href="pages/indices.html">Indices</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Platform</h4>
+                    <ul class="footer-links">
+                        <li><a href="pages/download.html">Download</a></li>
+                        <li><a href="pages/web-platform.html">Web Platform</a></li>
+                        <li><a href="pages/mobile-app.html">Mobile App</a></li>
+                        <li><a href="pages/api.html">API</a></li>
+                        <li><a href="pages/features.html">Features</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Support</h4>
+                    <ul class="footer-links">
+                        <li><a href="pages/contact.html">Contact Us</a></li>
+                        <li><a href="pages/help.html">Help Center</a></li>
+                        <li><a href="pages/tutorials.html">Tutorials</a></li>
+                        <li><a href="pages/webinars.html">Webinars</a></li>
+                        <li><a href="pages/community.html">Community</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4 class="footer-title">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="pages/about.html">About Us</a></li>
+                        <li><a href="pages/careers.html">Careers</a></li>
+                        <li><a href="pages/news.html">News</a></li>
+                        <li><a href="pages/investors.html">Investors</a></li>
+                        <li><a href="pages/compliance.html">Compliance</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <div class="footer-brand">
+                    <img src="./src/assets/logo1.jpg" alt="EdgeMarket Logo" class="footer-logo" style="width: 50px; height: 50px;">
+                </div>
+                <div class="footer-legal">
+                    <p>&copy; 2025 EdgeMarket. All rights reserved.</p>
+                    <div class="legal-links">
+                        <a href="pages/privacy.html">Privacy Policy</a>
+                        <a href="pages/terms.html">Terms of Service</a>
+                        <a href="pages/risk-disclosure.html">Risk Disclosure</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="scripts/particles.js"></script>
+    <script src="scripts/animations.js"></script>
+    <script src="scripts/main.js"></script>
+</body>
+</html>

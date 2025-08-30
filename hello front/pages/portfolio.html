@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Management - EdgeMarket Trading Platform</title>
+    <meta name="description" content="Advanced portfolio management tools for professional traders. Track performance, analyze risk, and optimize your trading strategy with EdgeMarket.">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="Portfolio Management - EdgeMarket Trading Platform">
+    <meta property="og:description" content="Professional portfolio management with advanced analytics, risk assessment, and performance tracking tools.">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../src/assets/logo1.jpg">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/mobile.css">
+    
+    <script src="../scripts/theme.js" defer></script>
+    <script src="../scripts/mobile-menu.js" defer></script>
+</head>
+<body class="light-theme">
+    <!-- Floating Particles Background -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <img src="../src/assets/logo1.jpg" alt="EdgeMarket Logo" class="logo pulse-animation">
+                <span class="brand-text">EdgeMarket</span>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="hedge-funds.html" class="nav-link">Hedge Funds</a>
+                <a href="brokers.html" class="nav-link">Brokers</a>
+                <a href="fundamental-analysis.html" class="nav-link">Fundamental</a>
+                <a href="technical-analysis.html" class="nav-link">Technical</a>
+                <a href="portfolio.html" class="nav-link active">Portfolio</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="download.html" class="nav-link">Download</a>
+            </div>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+                <button class="cta-button ripple-effect">Get Started</button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section page-hero" style="padding: 120px 0 80px; min-height: 60vh;">
+        <div class="container">
+            <div class="hero-content text-center fade-in-up">
+                <h1 class="hero-title" style="color: white;">Portfolio Management</h1>
+                <p class="hero-description" style="max-width: 600px; margin: 0 auto;">
+                    Professional portfolio management tools with advanced analytics, risk assessment, and performance tracking for optimal trading results.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Preview -->
+    <section class="trader-section" style="padding: var(--space-2xl) 0;">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">Advanced Portfolio Dashboard</h2>
+                <p class="section-description">Real-time portfolio monitoring with institutional-grade analytics</p>
+            </div>
+            
+            <!-- Portfolio Stats -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: var(--space-lg); margin-bottom: var(--space-2xl);">
+                <div class="card hover-lift" style="padding: var(--space-xl); text-center;" data-aos="fade-up">
+                    <div style="font-size: var(--font-size-3xl); font-weight: 800; color: var(--brand-secondary); margin-bottom: var(--space-xs);">$4,720,340</div>
+                    <div style="color: var(--text-secondary);">Total Portfolio Value</div>
+                    <div style="color: var(--brand-secondary); font-size: var(--font-size-sm); margin-top: var(--space-xs);">
+                        <i class="fas fa-arrow-up"></i> +47.5% This Month
+                    </div>
+                </div>
+                
+                <div class="card hover-lift" style="padding: var(--space-xl); text-center;" data-aos="fade-up" data-aos-delay="100">
+                    <div style="font-size: var(--font-size-3xl); font-weight: 800; color: var(--brand-primary); margin-bottom: var(--space-xs);">39.7%</div>
+                    <div style="color: var(--text-secondary);">Annual Return</div>
+                    <div style="color: var(--brand-primary); font-size: var(--font-size-sm); margin-top: var(--space-xs);">
+                        <i class="fas fa-chart-line"></i> Above Benchmark
+                    </div>
+                </div>
+                
+                <div class="card hover-lift" style="padding: var(--space-xl); text-center;" data-aos="fade-up" data-aos-delay="200">
+                    <div style="font-size: var(--font-size-3xl); font-weight: 800; color: var(--brand-accent); margin-bottom: var(--space-xs);">6.85</div>
+                    <div style="color: var(--text-secondary);">Sharp Ratio</div>
+                    <div style="color: var(--brand-accent); font-size: var(--font-size-sm); margin-top: var(--space-xs);">
+                        <i class="fas fa-shield-alt"></i> Risk Adjusted
+                    </div>
+                </div>
+                
+                <div class="card hover-lift" style="padding: var(--space-xl); text-center;" data-aos="fade-up" data-aos-delay="300">
+                    <div style="font-size: var(--font-size-3xl); font-weight: 800; color: #f59e0b; margin-bottom: var(--space-xs);">350</div>
+                    <div style="color: var(--text-secondary);">Active Positions</div>
+                    <div style="color: #f59e0b; font-size: var(--font-size-sm); margin-top: var(--space-xs);">
+                        <i class="fas fa-balance-scale"></i> Well Diversified
+                    </div>
+                </div>
+            </div>
+
+            <!-- Portfolio Allocation Chart -->
+            <div class="card" style="padding: var(--space-2xl); margin-bottom: var(--space-2xl);" data-aos="fade-up">
+                <h3 style="font-size: var(--font-size-xl); font-weight: 700; margin-bottom: var(--space-lg); color: var(--text-primary);">Asset Allocation</h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 300px; gap: var(--space-2xl); align-items: center;">
+                    <div class="portfolio-chart" style="height: 300px; background: var(--bg-secondary); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                        <div style="text-align: center; color: var(--text-secondary);">
+                            <i class="fas fa-chart-pie" style="font-size: var(--font-size-4xl); margin-bottom: var(--space-md);"></i>
+                            <div>Interactive Portfolio Chart</div>
+                            <div style="font-size: var(--font-size-sm); margin-top: var(--space-xs);">Real-time allocation visualization</div>
+                        </div>
+                        <!-- Animated chart elements -->
+                        <div class="trading-chart-container" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></div>
+                    </div>
+                    
+                    <div>
+                        <div style="margin-bottom: var(--space-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                                    <div style="width: 12px; height: 12px; background: var(--brand-primary); border-radius: 50%;"></div>
+                                    <span style="color: var(--text-primary); font-weight: 500;">Stocks</span>
+                                </div>
+                                <span style="color: var(--text-secondary);">45%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%; background: var(--brand-primary);"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: var(--space-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                                    <div style="width: 12px; height: 12px; background: var(--brand-secondary); border-radius: 50%;"></div>
+                                    <span style="color: var(--text-primary); font-weight: 500;">Forex</span>
+                                </div>
+                                <span style="color: var(--text-secondary);">30%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%; background: var(--brand-secondary);"></div>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: var(--space-md);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                                    <div style="width: 12px; height: 12px; background: var(--brand-accent); border-radius: 50%;"></div>
+                                    <span style="color: var(--text-primary); font-weight: 500;">Crypto</span>
+                                </div>
+                                <span style="color: var(--text-secondary);">15%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 15%; background: var(--brand-accent);"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-xs);">
+                                <div style="display: flex; align-items: center; gap: var(--space-sm);">
+                                    <div style="width: 12px; height: 12px; background: #f59e0b; border-radius: 50%;"></div>
+                                    <span style="color: var(--text-primary); font-weight: 500;">Commodities</span>
+                                </div>
+                                <span style="color: var(--text-secondary);">10%</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 10%; background: #f59e0b;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">Portfolio Management Features</h2>
+                <p class="section-description">Professional tools for portfolio optimization and risk management</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-area"></i>
+                    </div>
+                    <h3 class="feature-title">Performance Analytics</h3>
+                    <p class="feature-description">Comprehensive performance tracking with risk-adjusted returns, drawdown analysis, and benchmark comparisons</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <h3 class="feature-title">Risk Management</h3>
+                    <p class="feature-description">Advanced risk metrics including VaR, volatility analysis, and correlation matrices for optimal portfolio balance</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3 class="feature-title">Portfolio Rebalancing</h3>
+                    <p class="feature-description">Automated rebalancing alerts and suggestions to maintain optimal asset allocation and risk levels</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Alerts</h3>
+                    <p class="feature-description">Customizable alerts for price movements, risk thresholds, and portfolio performance milestones</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-file-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Detailed Reporting</h3>
+                    <p class="feature-description">Comprehensive reports with P&L statements, tax documents, and regulatory compliance summaries</p>
+                </div>
+                
+                <div class="feature-card hover-lift" data-aos="fade-up" data-aos-delay="600">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Mobile Access</h3>
+                    <p class="feature-description">Full portfolio management capabilities on mobile devices with real-time synchronization</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Risk Management Section -->
+    <section class="trader-section" style="padding: var(--space-2xl) 0;">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">Advanced Risk Management</h2>
+                <p class="section-description">Institutional-grade risk controls to protect your portfolio</p>
+            </div>
+            
+            <div class="trader-types">
+                <div class="trader-card" data-aos="fade-right">
+                    <div class="trader-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Risk Monitoring</h3>
+                    <p>Real-time risk assessment with advanced metrics and monitoring tools</p>
+                    <ul>
+                        <li>Value at Risk (VaR) calculation</li>
+                        <li>Maximum drawdown tracking</li>
+                        <li>Position sizing controls</li>
+                        <li>Correlation analysis</li>
+                    </ul>
+                </div>
+                
+                <div class="trader-card" data-aos="fade-up">
+                    <div class="trader-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Automated Controls</h3>
+                    <p>Set automatic limits and controls to manage risk exposure</p>
+                    <ul>
+                        <li>Stop-loss automation</li>
+                        <li>Position limits</li>
+                        <li>Exposure controls</li>
+                        <li>Risk-based alerts</li>
+                    </ul>
+                </div>
+                
+                <div class="trader-card" data-aos="fade-left">
+                    <div class="trader-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Stress Testing</h3>
+                    <p>Test portfolio performance under various market scenarios</p>
+                    <ul>
+                        <li>Historical scenario analysis</li>
+                        <li>Monte Carlo simulations</li>
+                        <li>Market stress tests</li>
+                        <li>Sensitivity analysis</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="cta">
+        <div class="container">
+            <div class="cta-content fade-in-up">
+                <h2 class="cta-title">Start Building Your Portfolio Today</h2>
+                <p class="cta-description">Join thousands of successful traders managing their portfolios with EdgeMarket's advanced tools</p>
+                <div class="cta-buttons">
+                    <button class="primary-button large ripple-effect">Open Portfolio Account</button>
+                    <button class="secondary-button large ripple-effect">View Demo</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <img src="../src/assets/logo1.jpg" alt="EdgeMarket Logo" class="footer-logo">
+                        <span class="footer-brand-text">EdgeMarket</span>
+                    </div>
+                    <p class="footer-description">The premier multi-asset trading platform for professional traders worldwide.</p>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <p>&copy; 2025 EdgeMarket. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../scripts/particles.js"></script>
+    <script src="../scripts/animations.js"></script>
+    <script src="../scripts/main.js"></script>
+</body>
+</html>

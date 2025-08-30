@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About EdgeMarket - Leading Trading Platform</title>
+    <meta name="description" content="Learn about EdgeMarket's mission to revolutionize trading with cutting-edge technology and professional-grade tools.">
+    
+    <!-- SEO Meta Tags -->
+    <meta property="og:title" content="About EdgeMarket - Leading Trading Platform">
+    <meta property="og:description" content="Discover EdgeMarket's journey in creating the world's most advanced trading platform for professionals.">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="../src/assets/logo1.jpg">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="../styles/components.css">
+    <link rel="stylesheet" href="../styles/theme.css">
+    <link rel="stylesheet" href="../styles/mobile.css">
+    
+    <script src="../scripts/theme.js" defer></script>
+    <script src="../scripts/mobile-menu.js" defer></script>
+</head>
+<body class="light-theme">
+    <!-- Floating Particles Background -->
+    <div class="particles-container" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <a href="../index.html" style="text-decoration: none; display: flex; align-items: center; gap: 1rem;">
+                    <img src="../src/assets/logo1.jpg" alt="EdgeMarket Logo" class="logo pulse-animation" style="width: 50px; height: 50px;">
+                    <span class="brand-text">EdgeMarket</span>
+                </a>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <a href="hedge-funds.html" class="nav-link">Hedge Funds</a>
+                <a href="brokers.html" class="nav-link">Brokers</a>
+                <a href="fundamental-analysis.html" class="nav-link">Fundamental</a>
+                <a href="technical-analysis.html" class="nav-link">Technical</a>
+                <a href="portfolio.html" class="nav-link">Portfolio</a>
+                <a href="about.html" class="nav-link active">About</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="download.html" class="nav-link">Download</a>
+            </div>
+
+            <div class="nav-actions">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle Theme">
+                    <i class="fas fa-moon" id="theme-icon"></i>
+                </button>
+                <button class="cta-button ripple-effect">Get Started</button>
+                <button class="mobile-menu-btn" id="mobile-menu-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section page-hero" style="padding: 120px 0 80px; min-height: 60vh;">
+        <div class="container">
+            <div class="hero-content text-center fade-in-up">
+                <h1 class="hero-title" style="color: white;">About EdgeMarket</h1>
+                <p class="hero-description" style="max-width: 600px; margin: 0 auto;">
+                    Pioneering the future of financial trading with innovative technology and unwavering commitment to excellence.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission Section -->
+    <section class="trader-section" style="padding: var(--space-2xl) 0;">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">Our Mission</h2>
+                <p class="section-description">Empowering traders worldwide with cutting-edge technology and institutional-grade tools</p>
+            </div>
+            
+            <div class="trader-types">
+                <div class="trader-card" data-aos="fade-up">
+                    <div class="trader-icon">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <h3>Innovation</h3>
+                    <p>We continuously push the boundaries of trading technology, delivering next-generation solutions that give our clients a competitive edge in the market.</p>
+                </div>
+                
+                <div class="trader-card" data-aos="fade-up" data-aos-delay="200">
+                    <div class="trader-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Security</h3>
+                    <p>Your assets and data are protected by bank-level security measures, ensuring complete peace of mind while you focus on trading.</p>
+                </div>
+                
+                <div class="trader-card" data-aos="fade-up" data-aos-delay="400">
+                    <div class="trader-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3>Community</h3>
+                    <p>Building a global community of successful traders through education, support, and cutting-edge trading infrastructure.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">Leadership Team</h2>
+                <p class="section-description">Meet the experts driving EdgeMarket's vision forward</p>
+            </div>
+            
+            <div class="features-grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--space-xl);">
+                <div class="feature-card hover-lift text-center" data-aos="fade-up">
+                    <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150&h=150&fit=crop&crop=face" alt="CEO" style="width: 120px; height: 120px; border-radius: 50%; margin: 0 auto var(--space-md); object-fit: cover;">
+                    <h3 class="feature-title">John Richardson</h3>
+                    <p style="color: var(--brand-primary); font-weight: 600; margin-bottom: var(--space-sm);">Chief Executive Officer</p>
+                    <p class="feature-description">Former Goldman Sachs executive with 20+ years in financial technology and institutional trading.</p>
+                </div>
+                
+                <div class="feature-card hover-lift text-center" data-aos="fade-up" data-aos-delay="200">
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&h=150&fit=crop&crop=face" alt="CTO" style="width: 120px; height: 120px; border-radius: 50%; margin: 0 auto var(--space-md); object-fit: cover;">
+                    <h3 class="feature-title">Sarah Chen</h3>
+                    <p style="color: var(--brand-primary); font-weight: 600; margin-bottom: var(--space-sm);">Chief Technology Officer</p>
+                    <p class="feature-description">Former Microsoft architect specializing in high-frequency trading systems and blockchain technology.</p>
+                </div>
+                
+                <div class="feature-card hover-lift text-center" data-aos="fade-up" data-aos-delay="400">
+                    <img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face" alt="CFO" style="width: 120px; height: 120px; border-radius: 50%; margin: 0 auto var(--space-md); object-fit: cover;">
+                    <h3 class="feature-title">Michael Torres</h3>
+                    <p style="color: var(--brand-primary); font-weight: 600; margin-bottom: var(--space-sm);">Chief Financial Officer</p>
+                    <p class="feature-description">Harvard MBA with extensive experience in fintech startups and venture capital investments.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="cta-section" style="background: var(--bg-secondary); color: var(--text-primary);">
+        <div class="container">
+            <div class="section-header fade-in-up">
+                <h2 class="section-title">EdgeMarket by the Numbers</h2>
+                <p class="section-description">Trusted by traders and institutions worldwide</p>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-xl); margin-top: var(--space-2xl);">
+                <div class="text-center">
+                    <div class="stat-number" data-target="750000" style="font-size: var(--font-size-4xl); font-weight: 800; color: var(--brand-primary); margin-bottom: var(--space-xs);">0</div>
+                    <div style="color: var(--text-secondary);">Active Users</div>
+                </div>
+                <div class="text-center">
+                    <div class="stat-number" data-target="9420" style="font-size: var(--font-size-4xl); font-weight: 800; color: var(--brand-primary); margin-bottom: var(--space-xs);">0</div>
+                    <div style="color: var(--text-secondary);">Trading Hardware & Devices</div>
+                </div>
+                <div class="text-center">
+                    <div class="stat-number" data-target="98.95" style="font-size: var(--font-size-4xl); font-weight: 800; color: var(--brand-primary); margin-bottom: var(--space-xs);">0</div>
+                    <div style="color: var(--text-secondary);">Uptime %</div>
+                </div>
+                <div class="text-center">
+                    <div class="stat-number" data-target="114" style="font-size: var(--font-size-4xl); font-weight: 800; color: var(--brand-primary); margin-bottom: var(--space-xs);">0</div>
+                    <div style="color: var(--text-secondary);">Countries Served</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="footer-brand">
+                        <img src="../src/assets/logo1.jpg" alt="EdgeMarket Logo" class="footer-logo">
+                        <span class="footer-brand-text">EdgeMarket</span>
+                    </div>
+                    <p class="footer-description">The premier multi-asset trading platform for professional traders worldwide.</p>
+                </div>
+                <div class="footer-section">
+                    <h4 class="footer-title">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <p>&copy; 2025 EdgeMarket. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../scripts/particles.js"></script>
+    <script src="../scripts/animations.js"></script>
+    <script src="../scripts/main.js"></script>
+</body>
+</html>
