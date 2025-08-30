@@ -35,6 +35,4 @@ export async function verifySupabaseConnection() {
     console.error('❌ Supabase verification failed:', error);
     return false;
   }
-}eturn false;
-  }
 }
