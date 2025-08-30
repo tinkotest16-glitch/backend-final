@@ -18,13 +18,13 @@ class AnimationController {
     bindEvents() {
         // Scroll-based animations
         window.addEventListener('scroll', this.throttle(this.handleScroll.bind(this), 16));
-        
+
         // Mouse movement parallax
         document.addEventListener('mousemove', this.throttle(this.handleMouseMove.bind(this), 16));
-        
+
         // Page load animations
         window.addEventListener('load', this.handlePageLoad.bind(this));
-        
+
         // Resize handling
         window.addEventListener('resize', this.debounce(this.handleResize.bind(this), 250));
     }
@@ -32,7 +32,7 @@ class AnimationController {
     initializeAOS() {
         // AOS-like functionality without the library
         const elements = document.querySelectorAll('[data-aos]');
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
@@ -40,12 +40,12 @@ class AnimationController {
                     const animation = element.dataset.aos;
                     const delay = element.dataset.aosDelay || 0;
                     const duration = element.dataset.aosDuration || 600;
-                    
+
                     setTimeout(() => {
                         element.classList.add('aos-animate');
                         this.animateElement(element, animation, duration);
                     }, delay);
-                    
+
                     observer.unobserve(element);
                 }
             });
@@ -78,13 +78,13 @@ class AnimationController {
 
         // Stagger animation for hero elements
         const elements = [heroTitle, heroDescription, heroButtons, heroStats];
-        
+
         elements.forEach((element, index) => {
             if (element) {
                 element.style.opacity = '0';
                 element.style.transform = 'translateY(50px)';
                 element.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                
+
                 setTimeout(() => {
                     element.style.opacity = '1';
                     element.style.transform = 'translateY(0)';
@@ -97,7 +97,7 @@ class AnimationController {
             heroVisual.style.opacity = '0';
             heroVisual.style.transform = 'scale(0.8) translateY(30px)';
             heroVisual.style.transition = 'all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-            
+
             setTimeout(() => {
                 heroVisual.style.opacity = '1';
                 heroVisual.style.transform = 'scale(1) translateY(0)';
@@ -107,22 +107,22 @@ class AnimationController {
 
     createFeatureCardAnimations() {
         const featureCards = document.querySelectorAll('.feature-card');
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const card = entry.target;
                     const index = Array.from(featureCards).indexOf(card);
-                    
+
                     card.style.opacity = '0';
                     card.style.transform = 'translateY(50px) scale(0.9)';
                     card.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-                    
+
                     setTimeout(() => {
                         card.style.opacity = '1';
                         card.style.transform = 'translateY(0) scale(1)';
                     }, index * 100);
-                    
+
                     observer.unobserve(card);
                 }
             });
@@ -135,13 +135,13 @@ class AnimationController {
 
     createStatsAnimation() {
         const statNumbers = document.querySelectorAll('.stat-number');
-        
+
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     const stat = entry.target;
                     const target = parseInt(stat.dataset.target);
-                    
+
                     this.animateCounter(stat, 0, target, 2000);
                     observer.unobserve(stat);
                 }
@@ -155,7 +155,7 @@ class AnimationController {
 
     createFloatingElements() {
         const floatingElements = document.querySelectorAll('.floating-animation, .floating-delayed');
-        
+
         floatingElements.forEach(element => {
             this.createFloatingAnimation(element);
         });
@@ -165,27 +165,27 @@ class AnimationController {
         let startTime = performance.now();
         const duration = 6000; // 6 seconds
         const amplitude = 20; // 20px movement
-        
+
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = (elapsed % duration) / duration;
             const yOffset = Math.sin(progress * Math.PI * 2) * amplitude;
-            
+
             element.style.transform = `translateY(${yOffset}px)`;
-            
+
             requestAnimationFrame(animate);
         };
-        
+
         requestAnimationFrame(animate);
     }
 
     initializeScrollTrigger() {
         // Parallax scrolling effects
         const parallaxElements = document.querySelectorAll('.parallax');
-        
+
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
-            
+
             parallaxElements.forEach(element => {
                 const speed = element.dataset.speed || 0.5;
                 const yPos = -(scrolled * speed);
@@ -196,11 +196,11 @@ class AnimationController {
         // Navbar color change on scroll
         const navbar = document.getElementById('navbar');
         const heroSection = document.querySelector('.hero-section');
-        
+
         if (navbar && heroSection) {
             window.addEventListener('scroll', () => {
                 const heroBottom = heroSection.offsetTop + heroSection.offsetHeight;
-                
+
                 if (window.scrollY > heroBottom - 100) {
                     navbar.classList.add('scrolled-past-hero');
                 } else {
@@ -224,9 +224,9 @@ class AnimationController {
             z-index: -1;
             opacity: 0.1;
         `;
-        
+
         document.body.appendChild(shapesContainer);
-        
+
         // Create animated shapes
         for (let i = 0; i < 5; i++) {
             this.createMorphingShape(shapesContainer, i);
@@ -236,11 +236,11 @@ class AnimationController {
     createMorphingShape(container, index) {
         const shape = document.createElement('div');
         shape.className = 'morphing-shape';
-        
+
         const size = Math.random() * 200 + 100;
         const x = Math.random() * window.innerWidth;
         const y = Math.random() * window.innerHeight;
-        
+
         shape.style.cssText = `
             position: absolute;
             width: ${size}px;
@@ -251,21 +251,21 @@ class AnimationController {
             border-radius: 50% 30% 70% 40%;
             animation: morphing ${10 + index * 2}s ease-in-out infinite;
         `;
-        
+
         container.appendChild(shape);
     }
 
     initializeTypewriter() {
         const typewriterElements = document.querySelectorAll('.typewriter');
-        
+
         typewriterElements.forEach(element => {
             const text = element.textContent;
             element.textContent = '';
             element.style.borderRight = '2px solid currentColor';
-            
+
             let i = 0;
             const typeSpeed = 100;
-            
+
             const typeWriter = () => {
                 if (i < text.length) {
                     element.textContent += text.charAt(i);
@@ -280,7 +280,7 @@ class AnimationController {
                     }, 500);
                 }
             };
-            
+
             // Start typing when element is visible
             const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
@@ -290,7 +290,7 @@ class AnimationController {
                     }
                 });
             });
-            
+
             observer.observe(element);
         });
     }
@@ -298,7 +298,7 @@ class AnimationController {
     initializeChartAnimations() {
         // Animated trading charts
         const chartElements = document.querySelectorAll('.animated-chart');
-        
+
         chartElements.forEach(chart => {
             this.createAnimatedChart(chart);
         });
@@ -307,37 +307,37 @@ class AnimationController {
     createAnimatedChart(container) {
         const canvas = document.createElement('canvas');
         const ctx = canvas.getContext('2d');
-        
+
         canvas.width = container.offsetWidth;
         canvas.height = container.offsetHeight;
         container.appendChild(canvas);
-        
+
         // Generate sample data
         const dataPoints = 50;
         const data = [];
         let value = 100;
-        
+
         for (let i = 0; i < dataPoints; i++) {
             value += (Math.random() - 0.5) * 10;
             data.push(value);
         }
-        
+
         let animationProgress = 0;
         const animationDuration = 2000;
-        
+
         const animate = (timestamp) => {
             if (!this.startTime) this.startTime = timestamp;
             const elapsed = timestamp - this.startTime;
             animationProgress = Math.min(elapsed / animationDuration, 1);
-            
+
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             this.drawChart(ctx, data, animationProgress, canvas.width, canvas.height);
-            
+
             if (animationProgress < 1) {
                 requestAnimationFrame(animate);
             }
         };
-        
+
         // Start animation when chart is visible
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -347,7 +347,7 @@ class AnimationController {
                 }
             });
         });
-        
+
         observer.observe(container);
     }
 
@@ -356,24 +356,24 @@ class AnimationController {
         const minValue = Math.min(...data);
         const maxValue = Math.max(...data);
         const range = maxValue - minValue;
-        
+
         ctx.strokeStyle = '#3b82f6';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        
+
         for (let i = 0; i <= pointsToShow; i++) {
             const x = (i / (data.length - 1)) * width;
             const y = height - (((data[i] - minValue) / range) * height);
-            
+
             if (i === 0) {
                 ctx.moveTo(x, y);
             } else {
                 ctx.lineTo(x, y);
             }
         }
-        
+
         ctx.stroke();
-        
+
         // Add glow effect
         ctx.shadowColor = '#3b82f6';
         ctx.shadowBlur = 10;
@@ -386,7 +386,7 @@ class AnimationController {
                 element.style.opacity = '0';
                 element.style.transform = 'translateY(30px)';
                 element.style.transition = `all ${duration}ms ease-out`;
-                
+
                 requestAnimationFrame(() => {
                     element.style.opacity = '1';
                     element.style.transform = 'translateY(0)';
@@ -396,7 +396,7 @@ class AnimationController {
                 element.style.opacity = '0';
                 element.style.transform = 'translateY(-30px)';
                 element.style.transition = `all ${duration}ms ease-out`;
-                
+
                 requestAnimationFrame(() => {
                     element.style.opacity = '1';
                     element.style.transform = 'translateY(0)';
@@ -406,7 +406,7 @@ class AnimationController {
                 element.style.opacity = '0';
                 element.style.transform = 'translateX(-30px)';
                 element.style.transition = `all ${duration}ms ease-out`;
-                
+
                 requestAnimationFrame(() => {
                     element.style.opacity = '1';
                     element.style.transform = 'translateX(0)';
@@ -416,7 +416,7 @@ class AnimationController {
                 element.style.opacity = '0';
                 element.style.transform = 'translateX(30px)';
                 element.style.transition = `all ${duration}ms ease-out`;
-                
+
                 requestAnimationFrame(() => {
                     element.style.opacity = '1';
                     element.style.transform = 'translateX(0)';
@@ -426,7 +426,7 @@ class AnimationController {
                 element.style.opacity = '0';
                 element.style.transform = 'scale(0.8)';
                 element.style.transition = `all ${duration}ms ease-out`;
-                
+
                 requestAnimationFrame(() => {
                     element.style.opacity = '1';
                     element.style.transform = 'scale(1)';
@@ -436,14 +436,14 @@ class AnimationController {
                 element.style.opacity = '0';
                 element.style.transform = 'perspective(2500px) rotateX(-100deg)';
                 element.style.transition = `all ${duration}ms ease-out`;
-                
+
                 requestAnimationFrame(() => {
                     element.style.opacity = '1';
                     element.style.transform = 'perspective(2500px) rotateX(0deg)';
                 });
             }
         };
-        
+
         if (animations[animation]) {
             animations[animation]();
         }
@@ -452,27 +452,27 @@ class AnimationController {
     animateCounter(element, start, end, duration) {
         const startTime = performance.now();
         const range = end - start;
-        
+
         const updateCounter = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            
+
             const easedProgress = this.easeOutQuart(progress);
             const currentValue = Math.floor(start + (range * easedProgress));
-            
+
             element.textContent = currentValue;
-            
+
             if (progress < 1) {
                 requestAnimationFrame(updateCounter);
             }
         };
-        
+
         requestAnimationFrame(updateCounter);
     }
 
     handleScroll() {
         const scrollY = window.pageYOffset;
-        
+
         // Update parallax elements
         const parallaxElements = document.querySelectorAll('.parallax');
         parallaxElements.forEach(element => {
@@ -480,7 +480,7 @@ class AnimationController {
             const yPos = -(scrollY * speed);
             element.style.transform = `translateY(${yPos}px)`;
         });
-        
+
         // Update progress indicators
         const progressElements = document.querySelectorAll('.scroll-progress');
         progressElements.forEach(element => {
@@ -495,14 +495,14 @@ class AnimationController {
         const mouseY = e.clientY;
         const centerX = window.innerWidth / 2;
         const centerY = window.innerHeight / 2;
-        
+
         // Mouse parallax for floating elements
         const floatingElements = document.querySelectorAll('.mouse-parallax');
         floatingElements.forEach(element => {
             const speed = element.dataset.speed || 0.1;
             const x = (mouseX - centerX) * speed;
             const y = (mouseY - centerY) * speed;
-            
+
             element.style.transform = `translate(${x}px, ${y}px)`;
         });
     }
@@ -510,7 +510,7 @@ class AnimationController {
     handlePageLoad() {
         // Trigger page entrance animations
         document.body.classList.add('page-loaded');
-        
+
         // Start any autoplay animations
         const autoplayElements = document.querySelectorAll('.auto-animate');
         autoplayElements.forEach(element => {
@@ -526,7 +526,7 @@ class AnimationController {
             canvas.width = container.offsetWidth;
             canvas.height = container.offsetHeight;
         });
-        
+
         // Update particle system
         this.updateParticleSystem();
     }
@@ -535,7 +535,7 @@ class AnimationController {
         const animationType = element.dataset.animation || 'pulse';
         const duration = element.dataset.duration || 2000;
         const delay = element.dataset.delay || 0;
-        
+
         setTimeout(() => {
             element.classList.add(`animate-${animationType}`);
         }, delay);
@@ -563,7 +563,7 @@ class AnimationController {
 
     easeOutElastic(t) {
         const c4 = (2 * Math.PI) / 3;
-        
+
         return t === 0
             ? 0
             : t === 1
@@ -619,16 +619,16 @@ style.textContent = `
             transform: rotate(270deg) scale(1.05);
         }
     }
-    
+
     .aos-animate {
         opacity: 1 !important;
         transform: translateY(0) !important;
     }
-    
+
     .page-loaded .page-enter {
         animation: fadeInUp 0.8s ease-out;
     }
-    
+
     .paused * {
         animation-play-state: paused !important;
     }
@@ -730,8 +730,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Add CSS for animations
-const animationStyles = document.createElement('style');
-animationStyles.textContent = `
+const animationStyles = `
     .animate-in {
         opacity: 1 !important;
         transform: translateY(0) !important;
