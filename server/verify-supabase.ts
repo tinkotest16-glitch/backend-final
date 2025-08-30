@@ -1,5 +1,5 @@
 
-import { createServerClient } from "../client/src/lib/supabase";
+import { createServerClient } from "../client/src/lib/supabase.js";
 
 export async function verifySupabaseConnection() {
   try {
@@ -34,5 +34,7 @@ export async function verifySupabaseConnection() {
   } catch (error) {
     console.error('❌ Supabase verification failed:', error);
     return false;
+  }
+}eturn false;
   }
 }
