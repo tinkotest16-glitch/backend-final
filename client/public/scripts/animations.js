@@ -641,97 +641,76 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // Scroll animations and number counters
 document.addEventListener('DOMContentLoaded', function() {
-    // Number counter animation
-    function animateNumbers() {
-        const numbers = document.querySelectorAll('.stat-number[data-target]');
+    // Counter animation for statistics
+    function animateCounters() {
+        const counters = document.querySelectorAll('.stat-number[data-target]');
 
-        numbers.forEach(number => {
-            const target = parseInt(number.getAttribute('data-target'));
-            const increment = target / 100;
+        counters.forEach(counter => {
+            const target = parseInt(counter.getAttribute('data-target'));
+            const increment = target / 200;
             let current = 0;
 
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= target) {
-                    current = target;
-                    clearInterval(timer);
-                }
-
-                if (target >= 1000) {
-                    number.textContent = (current / 1000).toFixed(0) + 'K+';
-                } else if (target < 100) {
-                    number.textContent = current.toFixed(1);
+            const updateCounter = () => {
+                if (current < target) {
+                    current += increment;
+                    if (target >= 1000) {
+                        counter.textContent = Math.floor(current).toLocaleString();
+                    } else {
+                        counter.textContent = current.toFixed(1);
+                    }
+                    requestAnimationFrame(updateCounter);
                 } else {
-                    number.textContent = Math.floor(current).toLocaleString();
+                    if (target >= 1000) {
+                        counter.textContent = target.toLocaleString();
+                    } else {
+                        counter.textContent = target.toString();
+                    }
                 }
-            }, 20);
+            };
+
+            updateCounter();
         });
     }
 
-    // Intersection Observer for scroll animations
+    // Intersection Observer for animations
     const observerOptions = {
         threshold: 0.1,
         rootMargin: '0px 0px -50px 0px'
     };
 
-    const observer = new IntersectionObserver((entries) => {
+    const animationObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
-                entry.target.classList.add('animate-in');
-
-                // Trigger number animation for stats
-                if (entry.target.classList.contains('hero-stats')) {
-                    animateNumbers();
+                if (entry.target.classList.contains('stat-number')) {
+                    animateCounters();
                 }
+                entry.target.classList.add('animate');
             }
         });
     }, observerOptions);
 
     // Observe elements for animation
-    document.querySelectorAll('.fade-in-up, .hero-stats, .features-grid, .trader-types, .testimonials-grid, .awards-grid').forEach(el => {
-        observer.observe(el);
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add animation classes to elements
+        const animatedElements = document.querySelectorAll(
+            '.fade-in-up, .hover-lift, .floating-animation, .floating-delayed, [data-aos]'
+        );
 
-    // Smooth scrolling for anchor links
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const target = document.querySelector(this.getAttribute('href'));
-            if (target) {
-                target.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+        animatedElements.forEach(el => {
+            animationObserver.observe(el);
         });
-    });
 
-    // Navbar scroll effect
-    const navbar = document.getElementById('navbar');
-    let lastScrollY = window.scrollY;
-
-    window.addEventListener('scroll', () => {
-        const currentScrollY = window.scrollY;
-
-        if (currentScrollY > 100) {
-            navbar.classList.add('scrolled');
-        } else {
-            navbar.classList.remove('scrolled');
-        }
-
-        if (currentScrollY > lastScrollY && currentScrollY > 200) {
-            navbar.classList.add('hidden');
-        } else {
-            navbar.classList.remove('hidden');
-        }
-
-        lastScrollY = currentScrollY;
+        // Observe stat numbers for counter animation
+        const statNumbers = document.querySelectorAll('.stat-number[data-target]');
+        statNumbers.forEach(stat => {
+            animationObserver.observe(stat);
+        });
     });
 });
 
 // Add CSS for animations
 const animationStyles = `
-    .animate-in {
+    .animate {
         opacity: 1 !important;
         transform: translateY(0) !important;
     }

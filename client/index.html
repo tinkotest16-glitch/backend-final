@@ -23,9 +23,6 @@
     <link rel="stylesheet" href="styles/components.css">
     <link rel="stylesheet" href="styles/theme.css">
     <link rel="stylesheet" href="styles/mobile.css">
-    
-    <script src="scripts/theme.js" defer></script>
-    <script src="scripts/mobile-menu.js" defer></script>
 </head>
 <body class="light-theme">
 
@@ -483,12 +480,42 @@
         </div>
     </footer>
 
+    <!-- React App Root -->
+    <div id="root" style="display: none;"></div>
+
     <!-- Scripts -->
     <script src="scripts/particles.js"></script>
     <script src="scripts/animations.js"></script>
     <script src="scripts/main.js"></script>
-    
-    <div id="root"></div>
+    <script src="scripts/theme.js"></script>
+    <script src="scripts/mobile-menu.js"></script>
     <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Route handling script -->
+    <script>
+        // Handle routing for React app
+        function checkRoute() {
+            const path = window.location.pathname;
+            const staticContent = document.querySelector('body > :not(#root)');
+            const reactRoot = document.getElementById('root');
+            
+            if (path === '/' || path === '/index.html') {
+                // Show static content, hide React
+                if (staticContent) staticContent.style.display = 'block';
+                if (reactRoot) reactRoot.style.display = 'none';
+            } else {
+                // Show React app, hide static content
+                if (staticContent) staticContent.style.display = 'none';
+                if (reactRoot) reactRoot.style.display = 'block';
+            }
+        }
+        
+        // Check route on load and popstate
+        window.addEventListener('load', checkRoute);
+        window.addEventListener('popstate', checkRoute);
+        
+        // Initial check
+        checkRoute();
+    </script>
 </body>
 </html>

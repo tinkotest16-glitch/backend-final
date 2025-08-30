@@ -18,16 +18,15 @@ import CopyTrading from "@/pages/copy-trading";
 import Signals from "@/pages/signals";
 import NotFound from "@/pages/not-found";
 
-// Homepage component that redirects to show the static landing page
+// Homepage component - serves the static landing page
 function Homepage() {
-  // Since the static HTML is served by the server, we don't need a React component
-  // The server will handle serving the index.html at root
-  return null;
+  return null; // Static HTML will be served directly
 }
 
 function Router() {
   return (
     <Switch>
+      <Route path="/" component={Homepage} />
       <Route path="/login" component={Login} />
       <Route path="/dashboard" component={Dashboard} />
       <Route path="/admin" component={AdminDashboard} />
