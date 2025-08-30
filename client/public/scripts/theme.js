@@ -34,3 +34,41 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     }
 });
+// Theme toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeIcon = document.getElementById('theme-icon');
+    const logo = document.querySelector('.nav-brand img');
+    
+    // Check for saved theme preference
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.classList.toggle('light-theme', savedTheme === 'light');
+    updateThemeUI(savedTheme);
+
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const isLight = document.body.classList.toggle('light-theme');
+            const theme = isLight ? 'light' : 'dark';
+            localStorage.setItem('theme', theme);
+            updateThemeUI(theme);
+        });
+    }
+
+    function updateThemeUI(theme) {
+        if (themeIcon) {
+            themeIcon.className = theme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
+        }
+        
+        if (logo) {
+            logo.src = theme === 'light' ? './logo.jpg' : './logo1.jpg';
+        }
+        
+        // Add animation class
+        if (themeToggle) {
+            themeToggle.classList.add('theme-toggle-animation');
+            setTimeout(() => {
+                themeToggle.classList.remove('theme-toggle-animation');
+            }, 300);
+        }
+    }
+});

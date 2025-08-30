@@ -639,3 +639,164 @@ document.head.appendChild(style);
 document.addEventListener('DOMContentLoaded', () => {
     new AnimationController();
 });
+// Scroll animations and number counters
+document.addEventListener('DOMContentLoaded', function() {
+    // Number counter animation
+    function animateNumbers() {
+        const numbers = document.querySelectorAll('.stat-number[data-target]');
+        
+        numbers.forEach(number => {
+            const target = parseInt(number.getAttribute('data-target'));
+            const increment = target / 100;
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                
+                if (target >= 1000) {
+                    number.textContent = (current / 1000).toFixed(0) + 'K+';
+                } else if (target < 100) {
+                    number.textContent = current.toFixed(1);
+                } else {
+                    number.textContent = Math.floor(current).toLocaleString();
+                }
+            }, 20);
+        });
+    }
+
+    // Intersection Observer for scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+                
+                // Trigger number animation for stats
+                if (entry.target.classList.contains('hero-stats')) {
+                    animateNumbers();
+                }
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements for animation
+    document.querySelectorAll('.fade-in-up, .hero-stats, .features-grid, .trader-types, .testimonials-grid, .awards-grid').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Smooth scrolling for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Navbar scroll effect
+    const navbar = document.getElementById('navbar');
+    let lastScrollY = window.scrollY;
+
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        
+        if (currentScrollY > 100) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+        
+        if (currentScrollY > lastScrollY && currentScrollY > 200) {
+            navbar.classList.add('hidden');
+        } else {
+            navbar.classList.remove('hidden');
+        }
+        
+        lastScrollY = currentScrollY;
+    });
+});
+
+// Add CSS for animations
+const animationStyles = document.createElement('style');
+animationStyles.textContent = `
+    .animate-in {
+        opacity: 1 !important;
+        transform: translateY(0) !important;
+    }
+
+    .fade-in-up {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
+    }
+
+    .navbar.scrolled {
+        background: rgba(15, 23, 42, 0.95);
+        backdrop-filter: blur(20px);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .navbar.hidden {
+        transform: translateY(-100%);
+    }
+
+    .navbar {
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-10px);
+    }
+
+    .floating-animation {
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .floating-delayed {
+        animation: float 6s ease-in-out infinite;
+        animation-delay: 2s;
+    }
+
+    @keyframes float {
+        0%, 100% {
+            transform: translateY(0px);
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    .pulse-animation {
+        animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+        0% {
+            transform: scale(1);
+        }
+        50% {
+            transform: scale(1.05);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+`;
+document.head.appendChild(animationStyles);
