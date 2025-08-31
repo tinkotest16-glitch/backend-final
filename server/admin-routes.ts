@@ -43,6 +43,32 @@ adminRouter.get("/users", async (req, res) => {
   }
 });
 
+// Delete user (admin only)
+adminRouter.delete("/user/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+    
+    // Check if user exists
+    const user = await storage.getUserById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Don't allow deleting admin users
+    if (user.isAdmin) {
+      return res.status(403).json({ message: "Cannot delete admin users" });
+    }
+
+    // Delete user and their data
+    await storage.deleteUser(userId);
+    
+    res.json({ message: "User deleted successfully" });
+  } catch (error) {
+    console.error('Delete user error:', error);
+    res.status(500).json({ message: "Failed to delete user" });
+  }
+});
+
 // Get all transactions (admin only)
 adminRouter.get("/transactions", async (req, res) => {
   try {
@@ -131,6 +157,37 @@ adminRouter.put("/user/:id/balance", async (req, res) => {
     res.json(user);
   } catch (error) {
     console.error("Error updating user balance:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// Delete user
+adminRouter.delete("/user/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Don't allow deleting admin users
+    const user = await storage.getUserById(id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    
+    if (user.isAdmin) {
+      return res.status(403).json({ message: "Cannot delete admin users" });
+    }
+
+    // Delete user
+    await storage.deleteUser(id);
+
+    // Remove from localStorage signup records if exists
+    const signupsKey = 'edgemarket_signups';
+    const signups = JSON.parse(localStorage.getItem(signupsKey) || '[]');
+    const updatedSignups = signups.filter((signup: any) => signup.email !== user.email);
+    localStorage.setItem(signupsKey, JSON.stringify(updatedSignups));
+
+    res.json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 });

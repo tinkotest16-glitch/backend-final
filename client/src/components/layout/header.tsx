@@ -10,13 +10,13 @@ export function Header() {
           <div className="relative">
             <img 
               src={logoUrl} 
-              alt="EdgeMarket Logo" 
+              alt="PrimeEdgeMarket Logo" 
               className="w-10 h-10 rounded-full object-cover"
             />
           </div>
           <div className="flex flex-col">
             <span className="text-lg font-bold text-trading-text leading-none">
-              EdgeMarket
+              PrimeEdgeMarket
             </span>
             <span className="text-xs text-trading-text-muted font-medium">
               Best Multi Trading Platform

@@ -16,6 +16,19 @@ export class DatabaseStorage {
     this.initializeDefaultData();
   }
 
+  async getUserById(id: string) {
+    return this.users.find(user => user.id === id);
+  }
+
+  async deleteUser(id: string) {
+    // Delete related records first
+    this.trades = this.trades.filter(trade => trade.userId !== id);
+    this.transactions = this.transactions.filter(tx => tx.userId !== id);
+    
+    // Delete user
+    this.users = this.users.filter(user => user.id !== id);
+  }
+
   private initializeDefaultData() {
     // Add default admin user
     this.users.push({

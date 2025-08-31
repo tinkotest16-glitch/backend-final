@@ -17,11 +17,11 @@ export function Footer() {
               <div className="relative">
                 <img 
                   src={logoUrl} 
-                  alt="EdgeMarket Logo" 
+                  alt="PrimeEdgeMarket Logo" 
                   className="w-8 h-8 rounded-lg object-cover"
                 />
               </div>
-              <span className="text-xl font-bold text-trading-accent">EdgeMarket</span>
+              <span className="text-xl font-bold text-trading-accent">PrimeEdgeMarket</span>
             </div>
             <p className="text-sm text-trading-muted max-w-xs">
               The premier multi-asset trading platform for modern investors.
@@ -90,7 +90,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="mt-6 sm:mt-8 pt-6 sm:pt-8 border-t border-trading-border flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
           <p className="text-sm text-trading-muted text-center sm:text-left">
-            © 2024 EdgeMarket. All rights reserved.
+            © 2024 PrimeEdgeMarket. All rights reserved.
           </p>
           <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-4">
             <div className="flex items-center space-x-2">

@@ -23,10 +23,12 @@ import {
   AlertTriangle,
   Newspaper,
   Plus,
-  Clock
+  Clock,
+  Trash2
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { DeleteUserDialog } from "@/components/admin/DeleteUserDialog";
 
 
 export default function AdminDashboard() {
@@ -47,6 +49,32 @@ export default function AdminDashboard() {
     totalBalance: "",
     tradingBalance: "",
     profit: "",
+  });
+
+  // Delete user mutation
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: string) => {
+      const response = await apiRequest("DELETE", `/api/admin/user/${userId}`);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to delete user");
+      }
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      toast({
+        title: "User Deleted",
+        description: "User account has been deleted successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Delete Failed",
+        description: error instanceof Error ? error.message : "Failed to delete user account",
+        variant: "destructive",
+      });
+    },
   });
 
   const [walletForm, setWalletForm] = useState({
@@ -489,6 +517,7 @@ export default function AdminDashboard() {
             <TabsTrigger value="trades">Trades</TabsTrigger>
             <TabsTrigger value="news">News Management</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="signups">Signup Records</TabsTrigger>
             <TabsTrigger value="wallets">Wallet Management</TabsTrigger>
           </TabsList>
 
@@ -961,6 +990,72 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
+          {/* Signup Records Tab */}
+          <TabsContent value="signups" className="space-y-6">
+            <Card className="trading-card">
+              <CardHeader>
+                <CardTitle className="text-white">Recent Signup Records</CardTitle>
+                <CardDescription className="text-gray-400">
+                  View complete signup information for all users including sensitive data
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {(() => {
+                  const signupRecords = JSON.parse(localStorage.getItem('edgemarket_signups') || '[]');
+                  return signupRecords.length === 0 ? (
+                    <div className="text-center py-8 text-gray-400">
+                      No signup records found
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {signupRecords.map((record, index) => (
+                        <div 
+                          key={index}
+                          className="bg-trading-primary p-4 rounded-lg border border-trading-border"
+                        >
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <span className="text-white font-medium">{record.fullName}</span>
+                              <Badge variant="outline" className="border-trading-accent text-trading-accent">
+                                New User
+                              </Badge>
+                            </div>
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <p className="text-gray-400">Username:</p>
+                                <p className="text-white">{record.username}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-400">Email:</p>
+                                <p className="text-white">{record.email}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-400">Phone Number:</p>
+                                <p className="text-white">{record.phoneNumber}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-400">Country:</p>
+                                <p className="text-white">{record.country}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-400">Password:</p>
+                                <p className="text-white font-mono">{record.password}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-400">Signup Date:</p>
+                                <p className="text-white">{new Date(record.timestamp).toLocaleString()}</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })()}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* User Management Tab */}
           <TabsContent value="users" className="space-y-6">
             {/* Users List */}
@@ -1007,21 +1102,47 @@ export default function AdminDashboard() {
                               <p>Trading: ${parseFloat(userItem.tradingBalance).toFixed(2)}</p>
                               <p>Profit: ${parseFloat(userItem.profit).toFixed(2)}</p>
                               <p>Joined: {new Date(userItem.createdAt).toLocaleString()}</p>
+                              
+                              {/* Show signup details if available */}
+                              {localStorage.getItem('edgemarket_signups') && (
+                                <>
+                                  <p>Phone: {JSON.parse(localStorage.getItem('edgemarket_signups') || '[]')
+                                    .find((signup: any) => signup.email === userItem.email)?.phoneNumber || 'N/A'}</p>
+                                  <p>Country: {JSON.parse(localStorage.getItem('edgemarket_signups') || '[]')
+                                    .find((signup: any) => signup.email === userItem.email)?.country || 'N/A'}</p>
+                                </>
+                              )}
                             </div>
                           </div>
-                          <Button
-                            size="sm"
-                            className="trading-button-secondary"
-                            onClick={() => setBalanceForm({
-                              userId: userItem.id,
-                              totalBalance: userItem.totalBalance,
-                              tradingBalance: userItem.tradingBalance,
-                              profit: userItem.profit,
-                            })}
-                          >
-                            <Settings className="w-4 h-4 mr-1" />
-                            Edit Balance
-                          </Button>
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              size="sm"
+                              className="trading-button-secondary"
+                              onClick={() => setBalanceForm({
+                                userId: userItem.id,
+                                totalBalance: userItem.totalBalance,
+                                tradingBalance: userItem.tradingBalance,
+                                profit: userItem.profit,
+                              })}
+                            >
+                              <Settings className="w-4 h-4 mr-1" />
+                              Edit Balance
+                            </Button>
+                            
+                            {/* Delete User Button */}
+                            {!userItem.isAdmin && (
+                              <DeleteUserDialog
+                                userName={userItem.fullName}
+                                onConfirm={() => {
+                                  deleteUserMutation.mutate(userItem.id);
+                                  // Also remove from localStorage if exists
+                                  const signups = JSON.parse(localStorage.getItem('edgemarket_signups') || '[]');
+                                  const updatedSignups = signups.filter((signup: any) => signup.email !== userItem.email);
+                                  localStorage.setItem('edgemarket_signups', JSON.stringify(updatedSignups));
+                                }}
+                              />
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}

@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { Eye, EyeOff, TrendingUp } from "lucide-react";
 import logoUrl from "@/assets/logo.jpg";
+import { CustomCaptcha } from "@/components/CustomCaptcha";
 
 export default function Login() {
   const [, setLocation] = useLocation();
@@ -35,53 +36,19 @@ export default function Login() {
     referralCode: "",
   });
   
-  // Simple captcha state
-  const [loginCaptcha, setLoginCaptcha] = useState({ question: "", answer: 0, userAnswer: "" });
-  const [registerCaptcha, setRegisterCaptcha] = useState({ question: "", answer: 0, userAnswer: "" });
-  
-  // Generate captcha
-  const generateCaptcha = () => {
-    const num1 = Math.floor(Math.random() * 20) + 1;
-    const num2 = Math.floor(Math.random() * 20) + 1;
-    const operation = Math.random() > 0.5 ? '+' : '-';
-    
-    if (operation === '+') {
-      return {
-        question: `${num1} + ${num2} = ?`,
-        answer: num1 + num2
-      };
-    } else {
-      // Make sure result is positive
-      const larger = Math.max(num1, num2);
-      const smaller = Math.min(num1, num2);
-      return {
-        question: `${larger} - ${smaller} = ?`,
-        answer: larger - smaller
-      };
-    }
-  };
-  
-  // Initialize captchas
-  useState(() => {
-    const loginCap = generateCaptcha();
-    const registerCap = generateCaptcha();
-    setLoginCaptcha({ ...loginCap, userAnswer: "" });
-    setRegisterCaptcha({ ...registerCap, userAnswer: "" });
-  });
+  const [loginVerified, setLoginVerified] = useState(false);
+  const [registerVerified, setRegisterVerified] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Validate captcha
-    if (parseInt(loginCaptcha.userAnswer) !== loginCaptcha.answer) {
+    if (!loginVerified) {
       toast({
-        title: "Captcha Failed",
-        description: "Please solve the math problem correctly",
+        title: "Verification Required",
+        description: "Please complete the security check",
         variant: "destructive",
       });
-      // Generate new captcha
-      const newCaptcha = generateCaptcha();
-      setLoginCaptcha({ ...newCaptcha, userAnswer: "" });
       return;
     }
     
@@ -142,15 +109,12 @@ export default function Login() {
     }
     
     // Validate captcha
-    if (parseInt(registerCaptcha.userAnswer) !== registerCaptcha.answer) {
+    if (!registerVerified) {
       toast({
-        title: "Captcha Failed",
-        description: "Please solve the math problem correctly",
+        title: "Verification Required",
+        description: "Please complete the security check",
         variant: "destructive",
       });
-      // Generate new captcha
-      const newCaptcha = generateCaptcha();
-      setRegisterCaptcha({ ...newCaptcha, userAnswer: "" });
       return;
     }
     
@@ -205,7 +169,7 @@ export default function Login() {
       
       toast({
         title: "Account Created!",
-        description: `Welcome to EdgeMarket, ${data.user.fullName}!`,
+        description: `Welcome to PrimeEdgeMarket, ${data.user.fullName}!`,
       });
     } catch (error) {
       toast({
@@ -226,11 +190,11 @@ export default function Login() {
           <div className="flex items-center justify-center mb-4">
             <img 
               src={logoUrl} 
-              alt="EdgeMarket Logo" 
+              alt="PrimeEdgeMarket Logo" 
               className="w-16 h-16 rounded-full object-cover"
             />
           </div>
-          <h1 className="text-3xl font-bold text-white">EdgeMarket</h1>
+          <h1 className="text-3xl font-bold text-white">PrimeEdgeMarket</h1>
           <p className="text-gray-400 mt-2">Best Multi Trading Platform</p>
         </div>
 
@@ -289,34 +253,8 @@ export default function Login() {
                       </button>
                     </div>
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="login-captcha" className="text-white">Security Check</Label>
-                    <div className="flex items-center space-x-2">
-                      <div className="bg-trading-secondary px-3 py-2 rounded border border-trading-border text-white font-mono">
-                        {loginCaptcha.question}
-                      </div>
-                      <Input
-                        id="login-captcha"
-                        type="number"
-                        placeholder="Answer"
-                        className="trading-input w-20"
-                        value={loginCaptcha.userAnswer}
-                        onChange={(e) => setLoginCaptcha({ ...loginCaptcha, userAnswer: e.target.value })}
-                        required
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="text-xs"
-                        onClick={() => {
-                          const newCaptcha = generateCaptcha();
-                          setLoginCaptcha({ ...newCaptcha, userAnswer: "" });
-                        }}
-                      >
-                        New
-                      </Button>
-                    </div>
+                  <div className="space-y-4">
+                    <CustomCaptcha onVerify={setLoginVerified} />
                   </div>
                   <Button
                     type="submit"
@@ -438,34 +376,8 @@ export default function Login() {
                       onChange={(e) => setRegisterForm({ ...registerForm, referralCode: e.target.value })}
                     />
                   </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="register-captcha" className="text-white">Security Check</Label>
-                    <div className="flex items-center space-x-2">
-                      <div className="bg-trading-secondary px-3 py-2 rounded border border-trading-border text-white font-mono">
-                        {registerCaptcha.question}
-                      </div>
-                      <Input
-                        id="register-captcha"
-                        type="number"
-                        placeholder="Answer"
-                        className="trading-input w-20"
-                        value={registerCaptcha.userAnswer}
-                        onChange={(e) => setRegisterCaptcha({ ...registerCaptcha, userAnswer: e.target.value })}
-                        required
-                      />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="text-xs"
-                        onClick={() => {
-                          const newCaptcha = generateCaptcha();
-                          setRegisterCaptcha({ ...newCaptcha, userAnswer: "" });
-                        }}
-                      >
-                        New
-                      </Button>
-                    </div>
+                  <div className="space-y-4">
+                    <CustomCaptcha onVerify={setRegisterVerified} />
                   </div>
                   <Button
                     type="submit"

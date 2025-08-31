@@ -15,7 +15,7 @@ const app = express();
 
 // Session middleware with proper secret from environment
 app.use(session({
-  secret: process.env.SESSION_SECRET || 'edgemarket-development-secret-key-change-in-production',
+  secret: process.env.SESSION_SECRET || 'primeedgemarket-development-secret-key-change-in-production',
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -44,7 +44,7 @@ setupVite(app, server);
 // this serves both the API and the client.
 const port = parseInt(process.env.PORT || '5000', 10);
 server.listen(port, "0.0.0.0", () => {
-  console.log(`🚀 EdgeMarket server running on port ${port}`);
+  console.log(`🚀 PrimeEdgeMarket server running on port ${port}`);
   console.log(`🌐 Server accessible at: http://0.0.0.0:${port}`);
   console.log(`📊 Admin credentials: z@test.com / 421`);
   console.log(`🔐 Using Supabase URL: ${process.env.VITE_SUPABASE_URL || 'Not configured'}`);

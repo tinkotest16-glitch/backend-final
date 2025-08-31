@@ -123,12 +123,12 @@ export function Sidebar({ onSettingsClick, className }: SidebarProps) {
           <div className="relative">
             <img
               src={logoUrl}
-              alt="EdgeMarket Logo"
+              alt="PrimeEdgeMarket Logo"
               className="w-8 h-8 rounded-lg object-cover"
             />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-trading-accent">EdgeMarket</h1>
+            <h1 className="text-xl font-bold text-trading-accent">PrimeEdgeMarket</h1>
             <p className="text-sm text-gray-400">Best Multi Trading Platform</p>
           </div>
         </div>

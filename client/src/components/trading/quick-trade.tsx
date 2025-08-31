@@ -66,7 +66,7 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
 
 
   const [amount, setAmount] = useState<string>("");
-  const [duration, setDuration] = useState<number>(900); // Default to 900 seconds (15 minutes)
+    const [duration, setDuration] = useState<number>(300); // Default 5 minutes
   const [lotSize, setLotSize] = useState<number>(0.01);
   const [takeProfit, setTakeProfit] = useState<string>("");
   const [stopLoss, setStopLoss] = useState<string>("");
@@ -159,16 +159,19 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
       return;
     }
 
+    // Convert duration from string to number for the trade
+    const durationInSeconds = parseInt(duration);
+    
     // Add to active trades for countdown display immediately
     const newTrade: ActiveTrade = {
       id: Math.random().toString(36).substr(2, 9), // Temporary ID for local state
       type,
-      duration: duration, // Store duration in seconds
+      duration: durationInSeconds, // Store duration in seconds
       startTime: Date.now(),
       amount: amount,
       entryPrice,
       pair: selectedPair,
-      remainingTime: duration // Initial remaining time
+      remainingTime: durationInSeconds // Initial remaining time
     };
     setActiveTrades(prev => [...prev, newTrade]);
 
@@ -339,7 +342,10 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
               {/* Duration */}
               <div>
                 <Label className="text-sm text-trading-muted">Trade Duration</Label>
-                <Select value={duration.toString()} onValueChange={(value) => setDuration(parseInt(value))}>
+                <Select 
+                  value={duration.toString()} 
+                  onValueChange={(value) => setDuration(parseInt(value))}
+                >
                   <SelectTrigger className="trading-select mt-1">
                     <SelectValue placeholder="Select duration" />
                   </SelectTrigger>
