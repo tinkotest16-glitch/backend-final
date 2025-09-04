@@ -25,6 +25,7 @@ export function Footer() {
             </div>
             <p className="text-sm text-trading-muted max-w-xs">
               The premier multi-asset trading platform for modern investors.
+              support@primeedgemarket.com
             </p>
             <div className="flex space-x-4">
               {[

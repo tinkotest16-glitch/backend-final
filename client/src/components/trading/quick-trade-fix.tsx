@@ -46,7 +46,7 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
     onSuccess: (data) => {
       toast({
         title: "Trade Opened",
-        description: \`Successfully opened \${data.type} trade for \${data.amount}\`,
+        description: `Successfully opened ${data.type} trade for ${data.amount}`,
       });
       queryClient.invalidateQueries({ queryKey: ['tradingHistory'] });
       setAmount("");
@@ -142,7 +142,7 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
           const elapsed = Math.floor((Date.now() - trade.startTime) / 1000);
           const remaining = Math.max(0, trade.duration - elapsed);
           return { ...trade, remainingTime: remaining };
-        }).filter(trade => trade.remainingTime > 0)
+        }).filter(trade => (trade.remainingTime || 0) > 0)
       );
     }, 1000);
 
