@@ -21,17 +21,18 @@ interface QuickTradeProps {
 interface ActiveTrade {
   id: string;
   type: 'BUY' | 'SELL';
-  duration: number;
-  startTime: number;
+  duration: number;      // seconds
+  startTime: number;     // ms epoch
   amount: string;
   entryPrice: number;
   pair: any;
-  remainingTime?: number;
+  remainingTime?: number; // seconds
 }
 
 export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
   const [amount, setAmount] = useState("");
   const [duration, setDuration] = useState<string>("300"); // Default 5 minutes
   const [takeProfit, setTakeProfit] = useState("");
@@ -62,22 +63,22 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
     },
   });
 
-  const validateTradeAmount = (amount: number, balance: number) => {
-    return amount > 0 && amount <= balance;
+  const validateTradeAmount = (amt: number, balance: number) => {
+    return amt > 0 && amt <= balance;
   };
 
-  const calculateLotInfo = (amount: string, basePrice: number) => {
-    const tradeAmount = parseFloat(amount || "0");
-    const lotSize = tradeAmount / basePrice;
+  const calculateLotInfo = (amt: string, basePrice: number) => {
+    const tradeAmount = parseFloat(amt || "0");
+    const lotSize = basePrice > 0 ? tradeAmount / basePrice : 0;
 
     return {
       standardLot: lotSize.toFixed(2),
       miniLot: (lotSize / 10).toFixed(2),
       microLot: (lotSize / 100).toFixed(2),
-      pipValue: selectedPair.symbol.includes('JPY') ?
-        (tradeAmount / basePrice * 0.01).toFixed(2) :
-        (tradeAmount * 0.0001).toFixed(2),
-      marginRequired: (tradeAmount * 0.01).toFixed(2)
+      pipValue: selectedPair?.symbol?.includes('JPY')
+        ? (tradeAmount / (basePrice || 1) * 0.01).toFixed(2)
+        : (tradeAmount * 0.0001).toFixed(2),
+      marginRequired: (tradeAmount * 0.01).toFixed(2),
     };
   };
 
@@ -93,18 +94,17 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
       return;
     }
 
-    const entryPrice = type === 'BUY' ?
-      parseFloat(selectedPair.askPrice || selectedPair.currentPrice) :
-      parseFloat(selectedPair.bidPrice || selectedPair.currentPrice);
+    const entryPrice = type === 'BUY'
+      ? parseFloat(selectedPair.askPrice || selectedPair.currentPrice)
+      : parseFloat(selectedPair.bidPrice || selectedPair.currentPrice);
 
-    if (isNaN(entryPrice)) {
+    if (!Number.isFinite(entryPrice)) {
       toast({ title: "Error", description: "Could not determine entry price.", variant: "destructive" });
       return;
     }
 
-    // Convert duration from string to number
-    const durationInSeconds = parseInt(duration);
-    if (isNaN(durationInSeconds)) {
+    const durationInSeconds = parseInt(duration, 10);
+    if (!Number.isFinite(durationInSeconds)) {
       toast({ title: "Error", description: "Invalid duration selected.", variant: "destructive" });
       return;
     }
@@ -117,7 +117,7 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
       amount: amount,
       entryPrice,
       pair: selectedPair,
-      remainingTime: durationInSeconds
+      remainingTime: durationInSeconds,
     };
 
     setActiveTrades(prev => [...prev, newTrade]);
@@ -138,11 +138,13 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveTrades(prev =>
-        prev.map(trade => {
-          const elapsed = Math.floor((Date.now() - trade.startTime) / 1000);
-          const remaining = Math.max(0, trade.duration - elapsed);
-          return { ...trade, remainingTime: remaining };
-        }).filter(trade => (trade.remainingTime || 0) > 0)
+        prev
+          .map(trade => {
+            const elapsed = Math.floor((Date.now() - trade.startTime) / 1000);
+            const remaining = Math.max(0, trade.duration - elapsed);
+            return { ...trade, remainingTime: remaining };
+          })
+          .filter(trade => (trade.remainingTime ?? 0) > 0)
       );
     }, 1000);
 
@@ -217,11 +219,14 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
               <div className="flex items-center justify-between text-sm text-trading-muted mt-3">
                 <span>Spread: {selectedPair.spread && (parseFloat(selectedPair.spread) * 10000).toFixed(1)} pips</span>
                 {selectedPair.changePercent && (
-                  <span className={cn(
-                    "font-medium",
-                    parseFloat(selectedPair.changePercent) > 0 ? "text-trading-success" : "text-trading-danger"
-                  )}>
-                    {parseFloat(selectedPair.changePercent) > 0 ? "+" : ""}{selectedPair.changePercent}%
+                  <span
+                    className={cn(
+                      "font-medium",
+                      parseFloat(selectedPair.changePercent) > 0 ? "text-trading-success" : "text-trading-danger"
+                    )}
+                  >
+                    {parseFloat(selectedPair.changePercent) > 0 ? "+" : ""}
+                    {selectedPair.changePercent}%
                   </span>
                 )}
               </div>
@@ -328,7 +333,9 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
               </div>
               <div>
                 <div className="text-trading-muted">Risk</div>
-                <div className="font-medium text-trading-warning">{((parseFloat(amount) / tradingBalance) * 100).toFixed(1)}%</div>
+                <div className="font-medium text-trading-warning">
+                  {((parseFloat(amount) / tradingBalance) * 100).toFixed(1)}%
+                </div>
               </div>
             </div>
           </div>
@@ -384,7 +391,8 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
                 const currentPrice = parseFloat(selectedPair?.currentPrice || trade.entryPrice.toString());
                 const entryPrice = trade.entryPrice;
                 const priceDiff = currentPrice - entryPrice;
-                const pnlSimulation = (priceDiff / entryPrice) * parseFloat(trade.amount) * (trade.type === 'BUY' ? 1 : -1);
+                const pnlSimulation =
+                  (priceDiff / entryPrice) * parseFloat(trade.amount) * (trade.type === 'BUY' ? 1 : -1);
                 const isProfit = pnlSimulation > 0;
 
                 return (
@@ -393,10 +401,12 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
                       {/* Header */}
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-3">
-                          <Badge className={cn(
-                            "font-bold",
-                            trade.type === 'BUY' ? "bg-trading-success" : "bg-trading-danger"
-                          )}>
+                          <Badge
+                            className={cn(
+                              "font-bold",
+                              trade.type === 'BUY' ? "bg-trading-success" : "bg-trading-danger"
+                            )}
+                          >
                             {trade.type}
                           </Badge>
                           <span className="font-medium text-trading-text">
@@ -405,7 +415,8 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
                         </div>
                         <div className="flex items-center space-x-2">
                           <div className="countdown-timer text-trading-accent font-semibold">
-                            {Math.floor((trade.remainingTime || 0) / 60)}:{String((trade.remainingTime || 0) % 60).padStart(2, '0')}
+                            {Math.floor((trade.remainingTime || 0) / 60)}:
+                            {String((trade.remainingTime || 0) % 60).padStart(2, '0')}
                           </div>
                           <Button
                             variant="ghost"
@@ -436,19 +447,23 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
                           </div>
                           <div>
                             <span className="text-trading-muted">Price Change:</span>
-                            <div className={cn(
-                              "font-bold",
-                              isProfit ? "text-trading-success" : "text-trading-danger"
-                            )}>
+                            <div
+                              className={cn(
+                                "font-bold",
+                                isProfit ? "text-trading-success" : "text-trading-danger"
+                              )}
+                            >
                               {isProfit ? '+' : ''}{formatPrice(priceDiff, 4)} ({((priceDiff / entryPrice) * 100).toFixed(2)}%)
                             </div>
                           </div>
                           <div>
                             <span className="text-trading-muted">P&L:</span>
-                            <div className={cn(
-                              "font-bold",
-                              isProfit ? "text-trading-success" : "text-trading-danger"
-                            )}>
+                            <div
+                              className={cn(
+                                "font-bold",
+                                isProfit ? "text-trading-success" : "text-trading-danger"
+                              )}
+                            >
                               {isProfit ? '+' : ''}{formatCurrency(pnlSimulation)}
                             </div>
                           </div>
@@ -504,3 +519,5 @@ export function QuickTrade({ selectedPair, userId, tradingBalance }: QuickTradeP
     </Card>
   );
 }
+
+export default QuickTrade;
