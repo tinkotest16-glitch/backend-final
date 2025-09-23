@@ -166,14 +166,40 @@ export function registerRoutes(app: Express): void {
 
       // Handle referral if provided
       if (req.body.referralCode) {
-        const referrer = await storage.getUserByEmail(req.body.referralCode); // Find by referral code
+        const users = await storage.getAllUsers();
+        // Find referrer by their referral code
+        const referrer = users.find((u: any) => u.referralCode === req.body.referralCode);
         if (referrer) {
+          // Update user with referral info
+          await storage.updateUser(user.id, { referredBy: referrer.id });
+          
+          // Create referral record
           await storage.createReferral({
             referrerId: referrer.id,
             refereeId: user.id,
             commission: "0.10", // 10% commission
             totalEarnings: "0.00",
           });
+
+          // Update referrer's referral count if supported
+          const referrerReferrals = await storage.getUserReferrals(referrer.id);
+          const referralCount = referrerReferrals.length;
+          
+          // Get current users array again for latest data
+          const currentUsers = await storage.getAllUsers();
+          const activeReferrals = referrerReferrals.filter(r => {
+            const referee = currentUsers.find((u: any) => u.id === r.refereeId);
+            return referee && parseFloat(referee.totalBalance) > 0;
+          }).length;
+
+          await storage.updateUserBalance(
+            referrer.id,
+            undefined,
+            undefined,
+            undefined,
+            referralCount,
+            activeReferrals
+          );
         }
       }
 
@@ -873,8 +899,25 @@ export function registerRoutes(app: Express): void {
 
   app.put("/api/admin/user/:id/balance", async (req, res) => {
     try {
-      const { totalBalance, tradingBalance, profit } = req.body;
-      const user = await storage.updateUserBalance(req.params.id, totalBalance, tradingBalance, profit);
+      const { 
+        totalBalance, 
+        tradingBalance, 
+        profit, 
+        referralCount, 
+        activeReferrals, 
+        referralEarnings 
+      } = req.body;
+
+      // Convert string values to numbers and handle undefined values
+      const user = await storage.updateUserBalance(
+        req.params.id,
+        totalBalance ? parseFloat(totalBalance) : undefined,
+        tradingBalance ? parseFloat(tradingBalance) : undefined,
+        profit ? parseFloat(profit) : undefined,
+        referralCount !== undefined ? parseInt(referralCount.toString()) : undefined,
+        activeReferrals !== undefined ? parseInt(activeReferrals.toString()) : undefined,
+        referralEarnings ? parseFloat(referralEarnings) : undefined
+      );
 
       if (!user) {
         return res.status(404).json({ message: "User not found" });
@@ -886,9 +929,16 @@ export function registerRoutes(app: Express): void {
         totalBalance: user.totalBalance,
         tradingBalance: user.tradingBalance,
         profit: user.profit,
+        referralCount: user.referralCount,
+        activeReferrals: user.activeReferrals,
+        referralEarnings: user.referralEarnings
       });
     } catch (error) {
-      res.status(400).json({ message: "Invalid request data" });
+      console.error("Error updating user balance:", error);
+      res.status(400).json({ 
+        message: "Invalid request data",
+        error: error instanceof Error ? error.message : String(error)
+      });
     }
   });
 
@@ -949,12 +999,12 @@ export function registerRoutes(app: Express): void {
         message: "Transaction approved successfully",
         transaction: updatedTransaction 
       });
-    } catch (error) {
+          } catch (error) {
       console.error("Error approving transaction:", error);
       res.status(500).json({ 
         success: false, 
         message: "Failed to approve transaction",
-        error: error.message 
+        error: error instanceof Error ? error.message : String(error)
       });
     }
   });
@@ -984,12 +1034,12 @@ export function registerRoutes(app: Express): void {
         message: "Transaction rejected successfully",
         transaction: updatedTransaction 
       });
-    } catch (error) {
+          } catch (error) {
       console.error("Error rejecting transaction:", error);
       res.status(500).json({ 
         success: false, 
         message: "Failed to reject transaction",
-        error: error.message 
+        error: error instanceof Error ? error.message : String(error)
       });
     }
   });

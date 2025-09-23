@@ -81,13 +81,25 @@ export function useAuth() {
   };
 
   const logout = async () => {
+    // Clear local storage
     localStorage.removeItem('edgemarket_user');
+    localStorage.removeItem('supabase.auth.token');
+    
+    // Clear React Query cache
     queryClient.setQueryData(["auth", "user"], null);
+    
     try {
+      // Log out from backend
       await logoutMutation.mutateAsync();
+      
+      // Log out from Supabase
+      if (import.meta.env.VITE_SUPABASE_URL) {
+        const { supabase } = await import("@/lib/supabase");
+        await supabase.auth.signOut();
+      }
     } catch (error) {
-      // Logout locally even if server call fails
-      console.log("Server logout failed, but logged out locally");
+      // Logout locally even if server calls fail
+      console.log("Server/Supabase logout failed, but logged out locally");
     }
   };
 

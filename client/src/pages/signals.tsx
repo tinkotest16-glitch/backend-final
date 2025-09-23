@@ -28,8 +28,8 @@ const signalOffers: SignalOffer[] = [
     id: "signal-1",
     title: "Pro Forex Signals",
     provider: "FX Masters",
-    price: 97,
-    originalPrice: 197,
+    price: 1300,
+    originalPrice: 2000,
     duration: "30 days",
     accuracy: 89.5,
     signalsPerDay: 5,
@@ -44,8 +44,8 @@ const signalOffers: SignalOffer[] = [
     id: "signal-2",
     title: "Elite Trading Signals",
     provider: "Market Wizards",
-    price: 147,
-    originalPrice: 297,
+    price: 1500,
+    originalPrice: 2250,
     duration: "30 days",
     accuracy: 92.3,
     signalsPerDay: 3,
@@ -60,7 +60,7 @@ const signalOffers: SignalOffer[] = [
     id: "signal-3",
     title: "Scalping Signals Pro",
     provider: "Quick Profits",
-    price: 67,
+    price: 1650,
     duration: "30 days",
     accuracy: 86.7,
     signalsPerDay: 8,
@@ -75,8 +75,8 @@ const signalOffers: SignalOffer[] = [
     id: "signal-4",
     title: "Swing Trading Signals",
     provider: "Trend Followers",
-    price: 87,
-    originalPrice: 167,
+    price: 2000,
+    originalPrice: 2750,
     duration: "30 days",
     accuracy: 88.2,
     signalsPerDay: 2,
@@ -90,8 +90,8 @@ const signalOffers: SignalOffer[] = [
     id: "signal-5",
     title: "AI Trading Signals",
     provider: "AlgoTrade AI",
-    price: 127,
-    originalPrice: 227,
+    price: 2500,
+    originalPrice: 3150,
     duration: "30 days",
     accuracy: 91.1,
     signalsPerDay: 4,
@@ -106,7 +106,7 @@ const signalOffers: SignalOffer[] = [
     id: "signal-6",
     title: "News Trading Signals",
     provider: "Economic Events",
-    price: 77,
+    price: 1400,
     duration: "30 days",
     accuracy: 84.9,
     signalsPerDay: 6,
@@ -285,7 +285,7 @@ export default function Signals() {
                     Our team can help you select the best signal package for your trading style
                   </p>
                   <Button className="trading-button-primary">
-                    Contact Support
+                    <a href="mailto:support@primeedgemarket.com" className="text-white" style={{ textDecoration: 'none' }}>Contact Support</a>
                   </Button>
                 </CardContent>
               </Card>

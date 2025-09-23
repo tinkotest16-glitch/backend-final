@@ -264,11 +264,14 @@ export class DatabaseStorage {
     return undefined;
   }
 
-  async updateUserBalance(id: string, totalBalance?: number, tradingBalance?: number, profit?: number): Promise<any | undefined> {
+  async updateUserBalance(id: string, totalBalance?: number, tradingBalance?: number, profit?: number, referralCount?: number, activeReferrals?: number, referralEarnings?: number): Promise<any | undefined> {
     const updates: any = {};
     if (totalBalance !== undefined) updates.totalBalance = totalBalance.toString();
     if (tradingBalance !== undefined) updates.tradingBalance = tradingBalance.toString();
     if (profit !== undefined) updates.profit = profit.toString();
+    if (referralCount !== undefined) updates.referralCount = referralCount;
+    if (activeReferrals !== undefined) updates.activeReferrals = activeReferrals;
+    if (referralEarnings !== undefined) updates.referralEarnings = referralEarnings.toString();
     return this.updateUser(id, updates);
   }
 

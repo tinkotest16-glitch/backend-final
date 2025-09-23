@@ -21,29 +21,9 @@ export default function Login() {
   const [showRegisterPassword, setShowRegisterPassword] = useState(false);
   
   // Extract referral code from URL and set initial active tab
-  const getRefCode = (url: string) => {
-    if (!url.includes('?ref=')) return '';
-    const code = url.split('?ref=')[1];
-    return code.includes('&') ? decodeURIComponent(code.split('&')[0]) : decodeURIComponent(code);
-  };
+  const referralCode = location.includes('?ref=') ? location.split('?ref=')[1] : '';
+  const [activeTab, setActiveTab] = useState(referralCode ? "register" : "login");
   
-  const initialRefCode = getRefCode(location);
-  const [activeTab, setActiveTab] = useState(initialRefCode ? "register" : "login");
-  
-  // Update active tab and form when URL changes
-  useEffect(() => {
-    const urlRefCode = getRefCode(location);
-    if (urlRefCode) {
-      setActiveTab("register");
-      setRegisterForm(prev => ({ ...prev, referralCode: urlRefCode }));
-      
-      // Show toast to confirm referral code
-      toast({
-        title: "Referral Code Detected",
-        description: `Using referral code: ${urlRefCode}`,
-      });
-    }
-  }, [location]);
   const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
@@ -57,8 +37,10 @@ export default function Login() {
     country: "",
     password: "",
     confirmPassword: "",
-    referralCode: initialRefCode || "", // Use initialRefCode from URL
-  });  const [loginVerified, setLoginVerified] = useState(false);
+    referralCode: referralCode,
+  });
+  
+  const [loginVerified, setLoginVerified] = useState(false);
   const [registerVerified, setRegisterVerified] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -76,24 +58,23 @@ export default function Login() {
     setIsLoading(true);
     
     try {
-      // Attempt login
       const response = await apiRequest("POST", "/api/auth/login", loginForm);
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
-      }
-
       const data = await response.json();
       
-      if (!data.user) {
-        throw new Error("No user data received");
-      }
-
-      // Set user in auth context
       login(data.user);
       
-      // Redirect based on user role
+      if (import.meta.env.VITE_SUPABASE_URL) {
+        try {
+          const { supabase } = await import("@/lib/supabase");
+          await supabase.auth.signInWithPassword({
+            email: loginForm.email,
+            password: loginForm.password,
+          });
+        } catch (supabaseError) {
+          console.log("Supabase auth sign-in optional, continuing with backend auth");
+        }
+      }
+      
       if (data.user.isAdmin) {
         setLocation("/admin");
       } else {
@@ -146,118 +127,40 @@ export default function Login() {
         phoneNumber: registerForm.phoneNumber,
         country: registerForm.country,
         password: registerForm.password,
-        referralCode: registerForm.referralCode || '',
         timestamp: new Date().toISOString()
       };
       
-      // Store signup record for admin view with referral code
-      const signupRecord = {
-        ...signupData,
-        referralCode: registerForm.referralCode.trim(), // Ensure referral code is included
-        timestamp: new Date().toISOString()
-      };
-
-      // Store in both localStorage and IndexedDB for persistence
-      const storeRecord = async () => {
-        // Store in localStorage
-        const existingData = JSON.parse(localStorage.getItem('edgemarket_signups') || '[]');
-        existingData.push(signupRecord);
-        localStorage.setItem('edgemarket_signups', JSON.stringify(existingData));
-
-        // Also store in IndexedDB for permanent storage
-        try {
-          const dbRequest = indexedDB.open('EdgeMarketDB', 1);
-          
-          dbRequest.onupgradeneeded = (event) => {
-            const db = event.target.result;
-            if (!db.objectStoreNames.contains('signups')) {
-              db.createObjectStore('signups', { keyPath: 'timestamp' });
-            }
-          };
-          
-          dbRequest.onsuccess = (event) => {
-            const db = event.target.result;
-            const transaction = db.transaction(['signups'], 'readwrite');
-            const store = transaction.objectStore('signups');
-            store.add(signupRecord);
-          };
-        } catch (error) {
-          console.error('Failed to store in IndexedDB:', error);
-          // Continue since we have localStorage backup
-        }
-      };
-
-      await storeRecord();
+      const existingData = JSON.parse(localStorage.getItem('edgemarket_signups') || '[]');
+      existingData.push(signupData);
+      localStorage.setItem('edgemarket_signups', JSON.stringify(existingData));
       
-      // Register user with referral info
       const response = await apiRequest("POST", "/api/auth/register", {
-        ...signupData,
-        referralCode: registerForm.referralCode.trim() // Ensure referral code is sent to backend
+        username: registerForm.username,
+        email: registerForm.email,
+        fullName: registerForm.fullName,
+        phoneNumber: registerForm.phoneNumber,
+        country: registerForm.country,
+        password: registerForm.password,
+        referralCode: registerForm.referralCode,
       });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Registration failed");
-      }
       
       const data = await response.json();
       
-      if (!data.user) {
-        throw new Error("No user data received");
-      }
-      
-      // Log user in
       login(data.user);
       
       if (import.meta.env.VITE_SUPABASE_URL) {
         try {
           const { supabase } = await import("@/lib/supabase");
-          
-          // First sign up the user in Supabase
-          const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
+          await supabase.auth.signInWithPassword({
             email: registerForm.email,
             password: registerForm.password,
-            options: {
-              data: {
-                full_name: registerForm.fullName,
-                username: registerForm.username,
-                phone_number: registerForm.phoneNumber,
-                country: registerForm.country,
-                referral_code: registerForm.referralCode
-              }
-            }
           });
-          
-          if (signUpError) throw signUpError;
-          
-      // Then sign them in to get the session
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: registerForm.email,
-        password: registerForm.password,
-      });
-      
-      if (signInError) throw signInError;
-
-      // If there was a valid referral code, create the referral relationship
-      if (registerForm.referralCode.trim()) {
-        try {
-          await apiRequest("POST", "/api/referrals/create", {
-            referralCode: registerForm.referralCode.trim(),
-            refereeId: data.user.id
-          });
-        } catch (refError) {
-          console.error("Failed to create referral relationship:", refError);
-          // Don't block signup if referral creation fails
+        } catch (supabaseError) {
+          console.log("Supabase auth sign-in optional, continuing with backend auth");
         }
       }
       
-      // Store Supabase session
-      localStorage.setItem('supabase.auth.token', signInData.session?.access_token || '');
-    } catch (supabaseError) {
-      console.error("Supabase auth error:", supabaseError);
-      // Continue with backend auth
-    }
-  }      setLocation("/dashboard");
+      setLocation("/dashboard");
       
       toast({
         title: "Account Created!",
@@ -279,13 +182,11 @@ export default function Login() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center mb-4">
-            <a href="https://primeedgemarket.com" target="_blank" rel="noopener noreferrer">
-              <img 
-                src={logoUrl} 
-                alt="PrimeEdgeMarket Logo" 
-                className="w-16 h-16 rounded-full object-cover cursor-pointer"
-              />
-            </a>
+            <img 
+              src={logoUrl} 
+              alt="PrimeEdgeMarket Logo" 
+              className="w-16 h-16 rounded-full object-cover"
+            />
           </div>
           <h1 className="text-3xl font-bold text-white">PrimeEdgeMarket</h1>
           <p className="text-gray-400 mt-2">Best Multi Trading Platform</p>

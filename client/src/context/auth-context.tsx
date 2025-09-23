@@ -17,12 +17,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     // Check for stored auth on mount
-    const storedUser = localStorage.getItem("protrader_user");
+    const storedUser = localStorage.getItem("edgemarket_user");
     if (storedUser) {
       try {
         setUser(JSON.parse(storedUser));
       } catch (error) {
-        localStorage.removeItem("protrader_user");
+        localStorage.removeItem("edgemarket_user");
       }
     }
     setIsLoading(false);
@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = (userData: User) => {
     setUser(userData);
-    localStorage.setItem("protrader_user", JSON.stringify(userData));
+    localStorage.setItem("edgemarket_user", JSON.stringify(userData));
   };
 
   const logout = () => {
@@ -42,7 +42,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (user) {
       const updatedUser = { ...user, ...userData };
       setUser(updatedUser);
-      localStorage.setItem("protrader_user", JSON.stringify(updatedUser));
+      localStorage.setItem("edgemarket_user", JSON.stringify(updatedUser));
     }
   };
 

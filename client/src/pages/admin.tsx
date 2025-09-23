@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Transaction, News, InsertNews, User } from "@shared/schema";
+import { ReferralManagement } from "@/components/admin/referral-management";
 import { 
   DollarSign, 
   Users, 
@@ -24,7 +25,9 @@ import {
   Newspaper,
   Plus,
   Clock,
-  Trash2
+  Trash2,
+  ArrowLeft,
+  UserPlus
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -442,12 +445,12 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-trading-primary text-white p-6">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-trading-primary text-white">
+      <div className="max-w-7xl mx-auto p-4">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+            <h1 className="text-2xl md:text-3xl font-bold">Admin Dashboard</h1>
             <p className="text-gray-400">Manage transactions, news, and user accounts</p>
           </div>
           <Button 
@@ -509,19 +512,52 @@ export default function AdminDashboard() {
         </div>
 
         {/* Main Content */}
-        <Tabs defaultValue="transactions" className="space-y-6">
-          <TabsList className="bg-trading-secondary">
-            <TabsTrigger value="transactions">Pending Approvals</TabsTrigger>
-            <TabsTrigger value="all-transactions">All Transactions</TabsTrigger>
-            <TabsTrigger value="withdrawals">Withdrawal History</TabsTrigger>
-            <TabsTrigger value="trades">Trades</TabsTrigger>
-            <TabsTrigger value="news">News Management</TabsTrigger>
-            <TabsTrigger value="users">User Management</TabsTrigger>
-            <TabsTrigger value="signups">Signup Records</TabsTrigger>
-            <TabsTrigger value="wallets">Wallet Management</TabsTrigger>
+        <Tabs defaultValue="transactions" className="flex flex-col gap-6">
+          <TabsList className="bg-trading-secondary flex flex-wrap items-center justify-start p-2 gap-2 h-auto rounded-lg">
+            <TabsTrigger value="referrals" className="flex items-center">
+              <Users className="w-4 h-4 mr-2" />
+              Referral Management
+            </TabsTrigger>
+            <TabsTrigger value="transactions" className="flex items-center">
+              <DollarSign className="w-4 h-4 mr-2" />
+              Pending Approvals
+            </TabsTrigger>
+            <TabsTrigger value="all-transactions" className="flex items-center">
+              <Clock className="w-4 h-4 mr-2" />
+              All Transactions
+            </TabsTrigger>
+            <TabsTrigger value="withdrawals" className="flex items-center">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              Withdrawal History
+            </TabsTrigger>
+            <TabsTrigger value="trades" className="flex items-center">
+              <TrendingUp className="w-4 h-4 mr-2" />
+              Trades
+            </TabsTrigger>
+            <TabsTrigger value="news" className="flex items-center">
+              <Newspaper className="w-4 h-4 mr-2" />
+              News Management
+            </TabsTrigger>
+            <TabsTrigger value="users" className="flex items-center">
+              <Users className="w-4 h-4 mr-2" />
+              User Management
+            </TabsTrigger>
+            <TabsTrigger value="signups" className="flex items-center">
+              <UserPlus className="w-4 h-4 mr-2" />
+              Signup Records
+            </TabsTrigger>
+            <TabsTrigger value="wallets" className="flex items-center">
+              <Settings className="w-4 h-4 mr-2" />
+              Wallet Management
+            </TabsTrigger>
           </TabsList>
 
           {/* Pending Transactions Tab */}
+          {/* Referral Management Tab */}
+          <TabsContent value="referrals">
+            <ReferralManagement />
+          </TabsContent>
+
           <TabsContent value="transactions">
             <Card className="trading-card">
               <CardHeader>
@@ -1044,6 +1080,10 @@ export default function AdminDashboard() {
                               <div>
                                 <p className="text-gray-400">Signup Date:</p>
                                 <p className="text-white">{new Date(record.timestamp).toLocaleString()}</p>
+                              </div>
+                              <div>
+                                <p className="text-gray-400">Referral Code:</p>
+                                <p className="text-white">{record.referralCode || 'None'}</p>
                               </div>
                             </div>
                           </div>

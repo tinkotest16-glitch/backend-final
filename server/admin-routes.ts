@@ -142,13 +142,28 @@ adminRouter.put("/transactions/:id/status", async (req, res) => {
   }
 });
 
-// Update user balance
+// Update user balance and referral data
 adminRouter.put("/user/:id/balance", async (req, res) => {
   try {
     const { id } = req.params;
-    const { totalBalance, tradingBalance, profit } = req.body;
+    const { 
+      totalBalance, 
+      tradingBalance, 
+      profit,
+      referralCount,
+      activeReferrals,
+      referralEarnings 
+    } = req.body;
 
-    const user = await storage.updateUserBalance(id, totalBalance, tradingBalance, profit);
+    const user = await storage.updateUserBalance(
+      id, 
+      parseFloat(totalBalance),
+      parseFloat(tradingBalance),
+      parseFloat(profit),
+      referralCount,
+      activeReferrals,
+      parseFloat(referralEarnings)
+    );
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });

@@ -37,6 +37,10 @@ interface AdminUser {
   profit: string;
   isAdmin: boolean;
   createdAt: string;
+  referralCode: string;
+  referralCount: number;
+  activeReferrals: number;
+  referralEarnings: string;
 }
 
 interface AdminWallet {
@@ -63,10 +67,14 @@ export function UserManagement() {
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [showPasswords, setShowPasswords] = useState(false);
   const [signupData, setSignupData] = useState<any[]>([]);
+  const [showSignups, setShowSignups] = useState(false);
   const [balanceForm, setBalanceForm] = useState({
     totalBalance: "",
     tradingBalance: "",
-    profit: ""
+    profit: "",
+    referralCount: 0,
+    activeReferrals: 0,
+    referralEarnings: "0"
   });
   
   // Load signup data from localStorage
@@ -100,25 +108,43 @@ export function UserManagement() {
   });
 
   const updateBalanceMutation = useMutation({
-    mutationFn: async (data: { userId: string; totalBalance: string; tradingBalance: string; profit: string }) => {
+    mutationFn: async (data: { 
+      userId: string; 
+      totalBalance: string; 
+      tradingBalance: string; 
+      profit: string;
+      referralCount: number;
+      activeReferrals: number;
+      referralEarnings: string;
+    }) => {
+      console.log("Updating user balance with data:", data); // Debug log
       return apiRequest("PUT", `/api/admin/user/${data.userId}/balance`, data);
     },
     onSuccess: () => {
-      toast({ title: "Success", description: "User balance updated successfully" });
+      toast({ title: "Success", description: "User details updated successfully" });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
       setSelectedUser(null);
     },
-    onError: () => {
-      toast({ title: "Error", description: "Failed to update balance", variant: "destructive" });
+    onError: (error) => {
+      console.error("Error updating user:", error); // Debug log
+      toast({ title: "Error", description: "Failed to update user details", variant: "destructive" });
     }
   });
 
   const handleUpdateBalance = () => {
     if (!selectedUser) return;
-    updateBalanceMutation.mutate({
+    // Convert string values to numbers for the API
+    const formData = {
       userId: selectedUser.id,
-      ...balanceForm
-    });
+      totalBalance: balanceForm.totalBalance,
+      tradingBalance: balanceForm.tradingBalance,
+      profit: balanceForm.profit,
+      referralCount: parseInt(balanceForm.referralCount.toString()),
+      activeReferrals: parseInt(balanceForm.activeReferrals.toString()),
+      referralEarnings: balanceForm.referralEarnings
+    };
+    console.log("Submitting form data:", formData); // Debug log
+    updateBalanceMutation.mutate(formData);
   };
 
   return (
@@ -132,6 +158,53 @@ export function UserManagement() {
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
+          {/* Signup Records Section */}
+          <div className="mb-6">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowSignups(!showSignups)}
+              className="mb-4"
+            >
+              {showSignups ? "Hide" : "Show"} Signup Records
+            </Button>
+            
+            {showSignups && (
+              <Card className="bg-trading-secondary">
+                <CardHeader>
+                  <CardTitle>Recent Signup Records</CardTitle>
+                  <CardDescription>View detailed signup information and referral codes</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Full Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Country</TableHead>
+                        <TableHead>Referral Code</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {signupData.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+                        .map((signup, index) => (
+                          <TableRow key={index}>
+                            <TableCell>{new Date(signup.timestamp).toLocaleDateString()}</TableCell>
+                            <TableCell>{signup.fullName}</TableCell>
+                            <TableCell>{signup.email}</TableCell>
+                            <TableCell>{signup.phoneNumber}</TableCell>
+                            <TableCell>{signup.country}</TableCell>
+                            <TableCell>{signup.referralCode || 'None'}</TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+          
           <Table>
             <TableHeader>
               <TableRow>
@@ -140,6 +213,10 @@ export function UserManagement() {
                 <TableHead>Phone</TableHead>
                 <TableHead>Country</TableHead>
                 <TableHead>Password</TableHead>
+                <TableHead>Referral Code</TableHead>
+                <TableHead>Referrals</TableHead>
+                <TableHead>Active Referrals</TableHead>
+                <TableHead>Referral Earnings</TableHead>
                 <TableHead>Total Balance</TableHead>
                 <TableHead>Trading Balance</TableHead>
                 <TableHead>Profit</TableHead>
@@ -172,6 +249,10 @@ export function UserManagement() {
                       </Button>
                     </div>
                   </TableCell>
+                  <TableCell>{user.referralCode || "N/A"}</TableCell>
+                  <TableCell>{user.referralCount || 0}</TableCell>
+                  <TableCell>{user.activeReferrals || 0}</TableCell>
+                  <TableCell className="text-green-600">${user.referralEarnings || "0.00"}</TableCell>
                   <TableCell>${user.totalBalance}</TableCell>
                   <TableCell>${user.tradingBalance}</TableCell>
                   <TableCell className={parseFloat(user.profit) >= 0 ? "text-green-600" : "text-red-600"}>
@@ -188,7 +269,10 @@ export function UserManagement() {
                             setBalanceForm({
                               totalBalance: user.totalBalance,
                               tradingBalance: user.tradingBalance,
-                              profit: user.profit
+                              profit: user.profit,
+                              referralCount: user.referralCount || 0,
+                              activeReferrals: user.activeReferrals || 0,
+                              referralEarnings: user.referralEarnings || "0"
                             });
                           }}
                         >
@@ -231,6 +315,34 @@ export function UserManagement() {
                               step="0.01"
                               value={balanceForm.profit}
                               onChange={(e) => setBalanceForm(prev => ({ ...prev, profit: e.target.value }))}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="referralCount">Total Referrals</Label>
+                            <Input
+                              id="referralCount"
+                              type="number"
+                              value={balanceForm.referralCount}
+                              onChange={(e) => setBalanceForm(prev => ({ ...prev, referralCount: parseInt(e.target.value) }))}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="activeReferrals">Active Referrals</Label>
+                            <Input
+                              id="activeReferrals"
+                              type="number"
+                              value={balanceForm.activeReferrals}
+                              onChange={(e) => setBalanceForm(prev => ({ ...prev, activeReferrals: parseInt(e.target.value) }))}
+                            />
+                          </div>
+                          <div>
+                            <Label htmlFor="referralEarnings">Referral Earnings ($)</Label>
+                            <Input
+                              id="referralEarnings"
+                              type="number"
+                              step="0.01"
+                              value={balanceForm.referralEarnings}
+                              onChange={(e) => setBalanceForm(prev => ({ ...prev, referralEarnings: e.target.value }))}
                             />
                           </div>
                         </div>
