@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Transaction, News, InsertNews, User } from "@shared/schema";
+import { KYCManagement } from "@/components/admin/kyc-management";
 import { 
   DollarSign, 
   Users, 
@@ -22,7 +23,8 @@ import {
   XCircle, 
   AlertTriangle,
   Newspaper,
-  Plus
+  Plus,
+  UserCheck
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -380,13 +382,13 @@ export default function AdminDashboard() {
 
         {/* Main Content */}
         <Tabs defaultValue="transactions" className="space-y-6">
-          <TabsList className="bg-trading-secondary">
-            <TabsTrigger value="transactions">Pending Approvals</TabsTrigger>
-            <TabsTrigger value="all-transactions">All Transactions</TabsTrigger>
+                    <TabsList className="bg-trading-secondary p-1 rounded-lg">
+            <TabsTrigger value="transactions">Transactions</TabsTrigger>
+            <TabsTrigger value="withdrawals">Withdrawals</TabsTrigger>
             <TabsTrigger value="trades">Trades</TabsTrigger>
-            <TabsTrigger value="news">News Management</TabsTrigger>
             <TabsTrigger value="users">User Management</TabsTrigger>
-          </TabsList>
+            <TabsTrigger value="kyc">KYC Verification</TabsTrigger>
+            <TabsTrigger value="news">News & Alerts</TabsTrigger>
 
           {/* Pending Transactions Tab */}
           <TabsContent value="transactions">
@@ -765,6 +767,10 @@ export default function AdminDashboard() {
           </TabsContent>
 
           {/* User Management Tab */}
+          <TabsContent value="kyc">
+            <KYCManagement />
+          </TabsContent>
+
           <TabsContent value="users" className="space-y-6">
             {/* Users List */}
             <Card className="trading-card">

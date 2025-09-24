@@ -32,11 +32,13 @@ export default defineConfig({
   },
   server: {
     fs: {
-      strict: true,
-      deny: ["**/.*"],
+      strict: false,
+      allow: ['.']
     },
     hmr: {
       overlay: false
-    }
+    },
+    host: true,
+    port: 3000
   }
 });

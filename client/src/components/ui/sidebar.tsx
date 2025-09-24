@@ -18,7 +18,8 @@ import {
   Copy,
   Zap,
   Sun,
-  Moon
+  Moon,
+  UserCheck
 } from "lucide-react";
 import logoUrl from "@/assets/logo.jpg";
 import { Link } from "wouter";
@@ -81,6 +82,12 @@ const navigation = [
     name: "Referrals",
     icon: Users,
     href: "/referrals",
+    active: false
+  },
+  {
+    name: "KYC Verification",
+    icon: UserCheck,
+    href: "/kyc-verification",
     active: false
   },
 ];

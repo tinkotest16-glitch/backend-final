@@ -17,6 +17,8 @@ import Referrals from "@/pages/referrals";
 import CopyTrading from "@/pages/copy-trading";
 import Signals from "@/pages/signals";
 import NotFound from "@/pages/not-found";
+import Verification from "@/pages/verification";
+import { KYCProvider } from "@/context/kyc-context";
 
 function Router() {
   return (
@@ -33,6 +35,7 @@ function Router() {
       <Route path="/referrals" component={Referrals} />
       <Route path="/copy-trading" component={CopyTrading} />
       <Route path="/signals" component={Signals} />
+      <Route path="/kyc-verification" component={Verification} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -44,8 +47,10 @@ function App() {
       <ThemeProvider>
         <TooltipProvider>
           <AuthProvider>
-            <Toaster />
-            <Router />
+            <KYCProvider>
+              <Toaster />
+              <Router />
+            </KYCProvider>
           </AuthProvider>
         </TooltipProvider>
       </ThemeProvider>

@@ -14,6 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Transaction, News, InsertNews, User } from "@shared/schema";
 import { ReferralManagement } from "@/components/admin/referral-management";
+import { KYCManagement } from "@/components/admin/kyc-management";
 import { 
   DollarSign, 
   Users, 
@@ -27,7 +28,8 @@ import {
   Clock,
   Trash2,
   ArrowLeft,
-  UserPlus
+  UserPlus,
+  ShieldCheck
 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -514,6 +516,10 @@ export default function AdminDashboard() {
         {/* Main Content */}
         <Tabs defaultValue="transactions" className="flex flex-col gap-6">
           <TabsList className="bg-trading-secondary flex flex-wrap items-center justify-start p-2 gap-2 h-auto rounded-lg">
+            <TabsTrigger value="kyc" className="flex items-center">
+              <ShieldCheck className="w-4 h-4 mr-2" />
+              KYC Management
+            </TabsTrigger>
             <TabsTrigger value="referrals" className="flex items-center">
               <Users className="w-4 h-4 mr-2" />
               Referral Management
@@ -554,6 +560,9 @@ export default function AdminDashboard() {
 
           {/* Pending Transactions Tab */}
           {/* Referral Management Tab */}
+          <TabsContent value="kyc">
+            <KYCManagement />
+          </TabsContent>
           <TabsContent value="referrals">
             <ReferralManagement />
           </TabsContent>
